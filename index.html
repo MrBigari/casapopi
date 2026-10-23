@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto manca a casa nostra</title>
+<meta name="description" content="Il countdown per il giorno in cui andiamo a vivere insieme.">
+<meta property="og:title" content="Quanto manca a casa nostra">
+<meta property="og:description" content="Il countdown per il giorno in cui andiamo a vivere insieme.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EDE5D3">
+
+<!-- Icona e "app" sulla schermata Home (file: manifest.webmanifest, icon-*.png, apple-touch-icon.png) -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Casa nostra">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --wall: #E4EADF;
+    --paper: #F6F7F2;
+    --ink: #1E2B2B;
+    --ink-soft: #4C5C5A;
+    --door: #2F5D62;
+    --door-deep: #244A4E;
+    --brass: #C79A2B;
+    --light: #FFE8A8;
+    --light-edge: #FFD166;
+    --frame: #1E2B2B;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+
+    /* Scena: colori che cambiano con la stagione (default = autunno) */
+    --bark: #6B4B3A;
+    --line: rgba(58, 46, 42, 0.22);
+    --sky-top: #F1D6A2;
+    --sky-low: #FBF0D8;
+    --sun: #FFE9B3;
+    --hill: #C9B574;
+    --ground: #A9A056;
+    --path: #DCCCA6;
+    --roof: #8E4F3A;
+    --roof-dark: #703C2C;
+    --house: #FBF6EA;
+    --bush: #8C8A3A;
+    --bush-stroke: transparent;
+    --bat: #2B2433;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --wall: #16211F;
+      --paper: #101A19;
+      --ink: #EEF2EA;
+      --ink-soft: #AEBBB6;
+      --door: #3F7F85;
+      --door-deep: #2F6268;
+      --frame: #EEF2EA;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { height: 100%; }
+  body { min-height: 100%; }
+
+  body {
+    background: var(--wall);
+    color: var(--ink);
+    font-family: var(--display);
+    display: grid;
+    place-items: center;
+    padding: 2rem 1.25rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    width: 100%;
+    max-width: 70rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  /* ---------- Porta ---------- */
+  .door-wrap { display: flex; justify-content: center; }
+
+  .door-svg {
+    width: 100%;
+    max-width: 34rem;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 12px 26px rgba(30, 43, 43, 0.14));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .door-svg { filter: brightness(0.82) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.35)); }
+  }
+
+  .door-leaf {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    transition: transform 2.2s cubic-bezier(.22, .8, .24, 1);
+  }
+
+  .spill {
+    transition: opacity 2.2s ease;
+    opacity: 0;
+  }
+
+  /* ---------- Testo ---------- */
+  .who {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+
+  .days {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    line-height: 0.9;
+  }
+
+  .days-num {
+    font-size: clamp(6rem, 22vw, 12.5rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    font-variation-settings: "opsz" 96;
+  }
+
+  .days-label {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 500;
+    color: var(--door);
+  }
+
+  .clock {
+    margin-top: 1.1rem;
+    font-size: clamp(1.4rem, 3.6vw, 2rem);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  .clock span { color: var(--ink-soft); font-size: 0.7em; margin: 0 0.5em 0 0.15em; }
+  .clock span:last-child { margin-right: 0; }
+
+  .when {
+    margin-top: 1.4rem;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+  }
+
+  .when strong { color: var(--ink); font-weight: 500; }
+
+  .note {
+    margin-top: 1.8rem;
+    padding-top: 1.2rem;
+    border-top: 2px solid var(--brass);
+    max-width: 30rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.3rem;
+    line-height: 1.5;
+  }
+
+  .note[hidden] { display: none; }
+
+  /* ---------- Tappe ---------- */
+  .page { width: 100%; max-width: 70rem; position: relative; z-index: 1; }
+
+  .steps {
+    margin-top: clamp(3rem, 8vw, 5.5rem);
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .steps h2 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 1.4rem;
+  }
+
+  .steps ol { list-style: none; position: relative; }
+
+  .steps { --track: color-mix(in srgb, var(--ink) 18%, transparent); }
+
+  /* Connettore che porta dalla tappa alla successiva; --f = quanto è "percorso" (0–1) */
+  .step::after {
+    content: "";
+    position: absolute;
+    left: calc(0.65rem - 1px);
+    top: 1.45rem;
+    width: 2px;
+    height: calc(100% - 1.3rem);
+    background: linear-gradient(to bottom,
+      var(--door) calc(var(--f, 0) * 100%),
+      var(--track) calc(var(--f, 0) * 100%));
+  }
+
+  .step:last-child::after { display: none; }
+
+  .step {
+    position: relative;
+    padding: 0 0 1.5rem 2.4rem;
+  }
+
+  .step:last-child { padding-bottom: 0; }
+
+  .step::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    background: var(--wall);
+    border: 2px solid var(--ink-soft);
+    z-index: 1;
+  }
+
+  .step-title { font-size: 1.15rem; font-weight: 500; }
+
+  .step-date {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .step.done::before { background: var(--door); border-color: var(--door); }
+  .step.done .step-title { color: var(--ink-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  .step.next::before {
+    background: var(--brass);
+    border-color: var(--brass);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--brass) 28%, transparent);
+  }
+
+  .step.next .step-title { font-weight: 800; }
+
+  /* Striscia orizzontale su schermi larghi; su telefono resta in verticale */
+  @media (min-width: 721px) {
+    .steps { max-width: none; }
+
+    .steps ol {
+      display: grid;
+      grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr));
+    }
+
+    .step::after {
+      left: calc(50% + 0.65rem);
+      top: calc(0.65rem - 1px);
+      width: calc(100% - 1.3rem);
+      height: 2px;
+      background: linear-gradient(to right,
+        var(--door) calc(var(--f, 0) * 100%),
+        var(--track) calc(var(--f, 0) * 100%));
+    }
+
+    .step { padding: 2.3rem 0.6rem 0; text-align: center; }
+    .step:last-child { padding-bottom: 0; }
+
+    .step::before { left: 50%; top: 0; transform: translateX(-50%); }
+
+    .step .step-tag { display: table; margin: 0.5rem auto 0; }
+  }
+
+  .step-tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.55rem;
+    border-radius: 99px;
+    background: var(--brass);
+    color: #1E2B2B;
+    font-size: 0.75rem;
+    font-weight: 800;
+    vertical-align: 0.1em;
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* ---------- Stagioni ---------- */
+  body[data-season="autunno"] {
+    --wall: #EDE5D3;
+    --sky-top: #F1D6A2; --sky-low: #FBF0D8; --sun: #FFE9B3;
+    --hill: #C9B574; --ground: #A9A056; --path: #DCCCA6;
+    --roof: #8E4F3A; --roof-dark: #703C2C; --house: #FBF6EA;
+    --bush: #8C8A3A; --bush-stroke: transparent;
+  }
+  body[data-season="inverno"] {
+    --wall: #E1E9F1;
+    --sky-top: #C9DAEA; --sky-low: #EEF4FA; --sun: #FFFFFF;
+    --hill: #E9F0F7; --ground: #F7FAFD; --path: #DCE6F0;
+    --roof: #6F7F96; --roof-dark: #56657B; --house: #FBF9F4;
+    --bush: #FFFFFF; --bush-stroke: #CFDCE8;
+  }
+  body[data-season="primavera"] {
+    --wall: #E7EFDB;
+    --sky-top: #BFE2F4; --sky-low: #EAF6FB; --sun: #FFE27A;
+    --hill: #A8D28A; --ground: #8CC566; --path: #E5D8B9;
+    --roof: #B25A41; --roof-dark: #8F452F; --house: #FFF8EC;
+    --bush: #6FA85A; --bush-stroke: transparent;
+  }
+  body[data-season="estate"] {
+    --wall: #F1EBD2;
+    --sky-top: #9FD3F0; --sky-low: #DDF0FA; --sun: #FFD84D;
+    --hill: #8FBF6A; --ground: #6FAE4E; --path: #E8DBB8;
+    --roof: #B25A41; --roof-dark: #8F452F; --house: #FFF6E4;
+    --bush: #4E9440; --bush-stroke: transparent;
+  }
+
+  /* Elementi della scena */
+  .wall  { fill: var(--house); stroke: var(--line); stroke-width: 1.5; }
+  .bush  { fill: var(--bush); stroke: var(--bush-stroke); stroke-width: 1; }
+
+  .smoke {
+    fill: #fff;
+    stroke: #D4DDE6;
+    stroke-width: 0.8;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: puff 5.4s ease-out infinite;
+  }
+
+  @keyframes puff {
+    0%   { opacity: 0;   transform: translate(0, 0) scale(0.6); }
+    20%  { opacity: 0.75; }
+    100% { opacity: 0;   transform: translate(12px, -38px) scale(1.7); }
+  }
+
+  .bat {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: flutter 1.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes flutter {
+    from { transform: translateY(-4px) scaleY(1); }
+    to   { transform: translateY(4px) scaleY(0.7); }
+  }
+
+  /* Feste: indipendenti dalla stagione, si attivano con una classe sul body (vedi CONFIG.holidays) */
+  .deco-halloween, .deco-natale { display: none; }
+  body.halloween .deco-halloween { display: block; }
+  body.natale .deco-natale { display: block; }
+
+  /* Col Natale le zucche di stagione lasciano il posto ai regali */
+  body.natale .deco.pumpkins { display: none; }
+
+  .bulb { animation: bulb 1.6s ease-in-out infinite alternate; }
+
+  @keyframes bulb {
+    from { opacity: 0.45; }
+    to   { opacity: 1; }
+  }
+
+  /* ---------- Sorprese al tocco ---------- */
+  .door-svg { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .hit rect { fill: transparent; cursor: pointer; }
+  .hit:focus { outline: none; }
+  .hit:focus-visible rect { stroke: var(--brass); stroke-width: 2; rx: 4; }
+
+  /* Fumo extra quando si tocca il camino (una volta sola, poi sparisce) */
+  .smoke.burst { animation: puffBig 3.6s ease-out forwards; }
+
+  @keyframes puffBig {
+    0%   { opacity: 0;    transform: translate(0, 0) scale(0.6); }
+    18%  { opacity: 0.85; }
+    100% { opacity: 0;    transform: translate(var(--bx, 14px), -70px) scale(2.1); }
+  }
+
+  /* ---------- Meteo ---------- */
+  .weather { margin-top: 0.5rem; font-size: 1rem; color: var(--ink-soft); }
+  .weather[hidden] { display: none; }
+
+  .drop {
+    stroke: var(--rain, #CFE0F5);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    opacity: 0.75;
+    animation: raindrop var(--d) linear infinite;
+  }
+
+  .flake {
+    fill: #fff;
+    stroke: #C3D2E1;
+    stroke-width: 0.5;
+    animation: flakefall var(--d) linear infinite;
+  }
+
+  @keyframes raindrop {
+    from { transform: translate(var(--x), -24px); }
+    to   { transform: translate(calc(var(--x) + var(--dx)), 424px); }
+  }
+
+  @keyframes flakefall {
+    from { transform: translate(var(--x), -10px); }
+    to   { transform: translate(calc(var(--x) + var(--dx)), 410px); }
+  }
+
+  .storm #flash { animation: lampo 7s linear infinite; }
+  .storm #bolt  { animation: lampo 7s linear infinite; }
+
+  @keyframes lampo {
+    0%, 91%, 100% { opacity: 0; }
+    92% { opacity: 0.75; }
+    93.5% { opacity: 0.1; }
+    95% { opacity: 0.6; }
+    97% { opacity: 0; }
+  }
+
+  /* ---------- Notte ---------- */
+  .star { animation: twinkle var(--tw, 3s) ease-in-out infinite alternate; }
+
+  @keyframes twinkle {
+    from { opacity: 0.35; }
+    to   { opacity: 1; }
+  }
+
+  body { transition: background-color 1.5s ease, color 1.5s ease; }
+
+  /* Quando fa notte (ora di Roma) anche la pagina passa al tema scuro */
+  body.night {
+    --ink: #EEF2EA;
+    --ink-soft: #AEBBB6;
+    --door: #3F7F85;
+    --door-deep: #2F6268;
+    --frame: #EEF2EA;
+  }
+  body.night[data-season="autunno"]   { --wall: #211C15; }
+  body.night[data-season="inverno"]   { --wall: #151D27; }
+  body.night[data-season="primavera"] { --wall: #17211A; }
+  body.night[data-season="estate"]    { --wall: #221F14; }
+
+  @media (prefers-color-scheme: dark) {
+    body[data-season="autunno"]   { --wall: #211C15; }
+    body[data-season="inverno"]   { --wall: #151D27; }
+    body[data-season="primavera"] { --wall: #17211A; }
+    body[data-season="estate"]    { --wall: #221F14; }
+  }
+
+  .sky {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fall {
+    position: absolute;
+    top: 0;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    opacity: var(--o, 0.75);
+    animation: fall var(--d) linear var(--dl) infinite;
+    will-change: transform;
+  }
+
+  .fall svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: sway var(--sw) ease-in-out var(--dl) infinite alternate;
+  }
+
+  .fall.rise { animation: rise var(--d) ease-in-out var(--dl) infinite; }
+  .fall.rise svg { filter: drop-shadow(0 0 5px #F4C95D); }
+
+  @keyframes fall {
+    from { transform: translate3d(0, -12vh, 0); }
+    to   { transform: translate3d(0, 112vh, 0); }
+  }
+
+  @keyframes rise {
+    0%   { transform: translate3d(0, 105vh, 0); opacity: 0; }
+    15%  { opacity: var(--o, 0.75); }
+    85%  { opacity: var(--o, 0.75); }
+    100% { transform: translate3d(0, -10vh, 0); opacity: 0; }
+  }
+
+  @keyframes sway {
+    from { transform: translateX(-16px) rotate(-30deg); }
+    to   { transform: translateX(16px) rotate(40deg); }
+  }
+
+  /* Decorazioni sulla porta: se ne vede una sola, quella della stagione */
+  .deco { display: none; }
+  body[data-season="autunno"]   .deco-autunno,
+  body[data-season="inverno"]   .deco-inverno,
+  body[data-season="primavera"] .deco-primavera,
+  body[data-season="estate"]    .deco-estate { display: block; }
+
+  /* ---------- Stato "ci siamo" ---------- */
+  body.arrived .days-label { color: var(--brass); }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 720px) {
+    main { grid-template-columns: 1fr; text-align: center; }
+    .days { justify-content: center; }
+    .note { margin-left: auto; margin-right: auto; }
+    .door-svg { max-width: 26rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door-leaf, .spill { transition: none; }
+    .fall, .fall.rise, .fall svg, .smoke, .bat, .star, .bulb { animation: none; }
+    .smoke { opacity: 0.55; }
+    .drop, .flake { animation: none; transform: translate(var(--x), var(--y)); }
+    .storm #flash, .storm #bolt { animation: none; }
+    .fall { top: var(--y); }
+  }
+</style>
+</head>
+
+<body>
+<div class="sky" id="sky" aria-hidden="true"></div>
+<div class="page">
+<main>
+
+  <div class="door-wrap">
+    <svg class="door-svg" viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="La nostra casetta">
+      <defs>
+        <clipPath id="sceneClip"><rect width="480" height="400" rx="28"/></clipPath>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="skyTop" offset="0" stop-color="var(--sky-top)"/>
+          <stop id="skyLow" offset="1" stop-color="var(--sky-low)"/>
+        </linearGradient>
+        <linearGradient id="horizonGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FF9A5A" stop-opacity="0"/>
+          <stop offset="1" stop-color="#FF9A5A" stop-opacity="1"/>
+        </linearGradient>
+        <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--light-edge)"/>
+          <stop offset="1" stop-color="var(--light)"/>
+        </linearGradient>
+        <linearGradient id="spillGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--light-edge)" stop-opacity=".6"/>
+          <stop offset="1" stop-color="var(--light-edge)" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="halo">
+          <stop offset="0" stop-color="var(--light-edge)" stop-opacity=".85"/>
+          <stop offset="1" stop-color="var(--light-edge)" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="fogGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="fog0" offset="0" stop-color="#E8EEF2" stop-opacity=".25"/>
+          <stop id="fog1" offset=".55" stop-color="#E8EEF2" stop-opacity=".55"/>
+          <stop id="fog2" offset="1" stop-color="#E8EEF2" stop-opacity=".8"/>
+        </linearGradient>
+        <filter id="nightF" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feColorMatrix id="nightM" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+        </filter>
+      </defs>
+
+      <g clip-path="url(#sceneClip)">
+        <rect width="480" height="400" fill="url(#skyGrad)"/>
+        <rect id="horizonGlow" x="0" y="150" width="480" height="160" fill="url(#horizonGrad)" opacity="0"/>
+
+        <!-- stelle (disegnate da JavaScript) -->
+        <g id="stars" opacity="0"></g>
+
+        <!-- sole: si sposta lungo il cielo in base all'ora -->
+        <g id="sun">
+          <circle id="sunDisc" r="20" fill="var(--sun)" opacity=".95"/>
+          <path class="deco deco-estate" d="M0 -36V-26M0 26V36M-36 0H-26M26 0H36M-18.4 -18.4L-25.5 -25.5M18.4 -18.4L25.5 -25.5M-18.4 18.4L-25.5 25.5M18.4 18.4L25.5 25.5" stroke="#FFD84D" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- luna: fase reale del giorno -->
+        <g id="moon" opacity="0">
+          <circle r="26" fill="#F4F1E4" opacity=".12"/>
+          <circle r="14" fill="#2B3558"/>
+          <path id="moonLit" d="" fill="#F4F1E4"/>
+        </g>
+
+        <g id="clouds" fill="#fff" opacity=".65">
+          <ellipse cx="96" cy="64" rx="34" ry="11"/><ellipse cx="116" cy="56" rx="22" ry="10"/><ellipse cx="78" cy="58" rx="16" ry="8"/>
+          <ellipse cx="318" cy="98" rx="24" ry="8"/><ellipse cx="332" cy="91" rx="14" ry="7"/>
+        </g>
+
+        <g id="cloudsMore" fill="#fff" opacity="0">
+          <ellipse cx="200" cy="40" rx="40" ry="12"/><ellipse cx="228" cy="32" rx="26" ry="11"/>
+          <ellipse cx="400" cy="46" rx="36" ry="11"/><ellipse cx="372" cy="54" rx="22" ry="9"/>
+          <ellipse cx="40" cy="120" rx="34" ry="10"/><ellipse cx="450" cy="130" rx="30" ry="10"/>
+          <ellipse cx="250" cy="150" rx="46" ry="12"/><ellipse cx="280" cy="142" rx="28" ry="11"/>
+          <ellipse cx="140" cy="20" rx="44" ry="12"/><ellipse cx="320" cy="14" rx="40" ry="11"/>
+        </g>
+
+        <!-- Halloween: pipistrelli nel cielo -->
+        <g class="deco deco-halloween">
+          <g transform="translate(150 98) scale(1.1)"><path class="bat" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+          <g transform="translate(222 62) scale(.8)"><path class="bat" style="animation-delay:-.8s" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+          <g transform="translate(338 112) scale(.9)"><path class="bat" style="animation-delay:-1.5s" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+        </g>
+
+        <!-- Paesaggio: di notte si scurisce e si fa blu -->
+        <g id="scenery" filter="url(#nightF)">
+
+        <!-- colline e prato -->
+        <path d="M0 306Q96 268 196 296T372 288T480 300L480 400L0 400Z" fill="var(--hill)"/>
+        <path d="M0 338Q120 326 240 334T480 330L480 400L0 400Z" fill="var(--ground)"/>
+
+        <!-- alberi (disegnati da JavaScript, cambiano con la stagione) -->
+        <g id="trees"></g>
+
+        <!-- vialetto -->
+        <polygon points="206,340 274,340 336,400 144,400" fill="var(--path)"/>
+
+        <!-- camino e fumo -->
+        <rect x="296" y="124" width="20" height="50" fill="#8A5A48"/>
+        <rect x="292" y="118" width="28" height="8" rx="1.5" fill="#6E4636"/>
+        <g class="deco deco-autunno deco-inverno">
+          <circle class="smoke" cx="306" cy="110" r="5"/>
+          <circle class="smoke" style="animation-delay:-1.7s" cx="306" cy="110" r="5"/>
+          <circle class="smoke" style="animation-delay:-3.4s" cx="306" cy="110" r="5"/>
+        </g>
+        <g id="burst"></g>
+
+        <!-- casa -->
+        <rect class="wall" x="130" y="213" width="220" height="121"/>
+        <polygon points="112,210 240,110 368,210" fill="var(--roof)"/>
+        <rect x="112" y="205" width="256" height="8" rx="2" fill="var(--roof-dark)"/>
+        <circle cx="240" cy="170" r="11" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M240 159V181M229 170H251" stroke="#5A463C" stroke-width="2"/>
+
+        <!-- finestre -->
+        <rect x="146" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M167 238V278M146 258H188" stroke="#5A463C" stroke-width="2.5"/>
+        <rect x="142" y="278" width="50" height="5" rx="1.5" fill="#5A463C"/>
+        <rect x="292" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M313 238V278M292 258H334" stroke="#5A463C" stroke-width="2.5"/>
+        <rect x="288" y="278" width="50" height="5" rx="1.5" fill="#5A463C"/>
+
+        
+
+        <rect x="199" y="334" width="82" height="6" rx="2" fill="#B9AC94"/>
+
+        <!-- cespugli agli angoli della casa -->
+        <ellipse class="bush" cx="140" cy="331" rx="20" ry="12"/>
+        <ellipse class="bush" cx="156" cy="337" rx="12" ry="8"/>
+        <ellipse class="bush" cx="340" cy="331" rx="20" ry="12"/>
+        <ellipse class="bush" cx="324" cy="337" rx="12" ry="8"/>
+
+        <!-- foglie cadute / fiori sul prato (disegnati da JavaScript) -->
+        <g id="groundDetails"></g>
+
+        <!-- AUTUNNO: zucche (spariscono quando comincia il Natale) -->
+        <g class="deco deco-autunno pumpkins">
+          <ellipse cx="180" cy="327" rx="13" ry="10.5" fill="#E8892B"/>
+          <ellipse cx="180" cy="327" rx="5.5" ry="10.5" fill="#D1731A" opacity=".45"/>
+          <rect x="178" y="314" width="4" height="6" rx="1.5" fill="#5B7A3A"/>
+          <ellipse cx="326" cy="332" rx="9" ry="7.5" fill="#D86F1B"/>
+          <rect x="324" y="323" width="3.5" height="5" rx="1.5" fill="#5B7A3A"/>
+          <ellipse cx="304" cy="324" rx="17" ry="14" fill="#E07B24"/>
+          <ellipse cx="304" cy="324" rx="7" ry="14" fill="#C25F14" opacity=".4"/>
+          <rect x="302" y="308" width="5" height="7" rx="1.5" fill="#5B7A3A"/>
+          
+          
+          
+        </g>
+
+        <!-- INVERNO: neve sul tetto, cumuli, pupazzo -->
+        <g class="deco deco-inverno">
+          <path d="M116 208L240 114L364 208" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="291" y="113" width="30" height="7" rx="3" fill="#fff"/>
+          <path d="M126 336Q150 322 178 336ZM302 336Q326 322 354 336Z" fill="#fff" stroke="#D3DEE9"/>
+          <circle cx="92" cy="368" r="15" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="92" cy="346" r="11" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="92" cy="329" r="8.5" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="89" cy="327" r="1.1" fill="#3A2E2A"/><circle cx="95" cy="327" r="1.1" fill="#3A2E2A"/>
+          <polygon points="92,330 103,332 92,334" fill="#F08A3C"/>
+          <rect x="83" y="336" width="18" height="4" rx="2" fill="#C8553D"/>
+          <circle cx="92" cy="346" r="1.2" fill="#3A2E2A"/><circle cx="92" cy="352" r="1.2" fill="#3A2E2A"/>
+        </g>
+
+        <!-- NATALE: regali e alberello -->
+        <g class="deco deco-natale">
+          <rect x="160" y="322" width="20" height="14" rx="1.5" fill="#C8402F"/>
+          <path d="M170 322V336M160 329H180" stroke="#F2C94C" stroke-width="2.2"/>
+          <rect x="181" y="327" width="15" height="9" rx="1.5" fill="#2E7D4F"/>
+          <path d="M188.5 327V336M181 331.5H196" stroke="#F2C94C" stroke-width="2"/>
+          <rect x="381" y="342" width="6" height="8" fill="#6B4B3A"/>
+          <polygon points="384,298 368,322 400,322" fill="#2E6B3A"/>
+          <polygon points="384,310 363,336 405,336" fill="#2F7440"/>
+          <polygon points="384,324 358,350 410,350" fill="#2E6B3A"/>
+          <circle cx="378" cy="318" r="2.6" fill="#E5483C"/><circle cx="391" cy="330" r="2.8" fill="#F2C94C"/>
+          <circle cx="374" cy="340" r="3" fill="#4D8BFF"/><circle cx="394" cy="344" r="3" fill="#E5483C"/>
+          <circle cx="384" cy="332" r="2.6" fill="#F2C94C"/>
+        </g>
+
+        <!-- PRIMAVERA / ESTATE: fioriere sotto le finestre -->
+        <g class="deco deco-primavera deco-estate">
+          <rect x="144" y="280" width="46" height="8" rx="1.5" fill="#8A5A48"/>
+          <rect x="290" y="280" width="46" height="8" rx="1.5" fill="#8A5A48"/>
+        </g>
+        <g class="deco deco-estate">
+          <path d="M190 334V296M288 334V288" stroke="#4E8A3A" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="190" cy="292" r="8" fill="#F4C230"/><circle cx="190" cy="292" r="3.6" fill="#7A4A1E"/>
+          <circle cx="288" cy="284" r="8.5" fill="#F4C230"/><circle cx="288" cy="284" r="3.8" fill="#7A4A1E"/>
+        </g>
+        </g>
+
+        <!-- Luci: restano accese anche di notte -->
+        <g id="lit">
+          <g id="halos" opacity="0">
+            <ellipse id="haloL" cx="167" cy="258" rx="50" ry="46" fill="url(#halo)"/>
+            <ellipse id="haloR" cx="313" cy="258" rx="50" ry="46" fill="url(#halo)"/>
+            <ellipse cx="240" cy="300" rx="64" ry="74" fill="url(#halo)"/>
+          </g>
+
+          <rect id="winL" x="146" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M167 238V278M146 258H188" stroke="#5A463C" stroke-width="2.5"/>
+          <rect id="winR" x="292" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M313 238V278M292 258H334" stroke="#5A463C" stroke-width="2.5"/>
+          <circle cx="240" cy="170" r="11" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M240 159V181M229 170H251" stroke="#5A463C" stroke-width="2"/>
+
+          <!-- fiori delle fioriere: sopra le finestre, ma si scuriscono di notte -->
+          <g filter="url(#nightF)">
+            <g class="deco deco-primavera">
+              <g fill="#F29BB5"><circle cx="152" cy="277" r="3.6"/><circle cx="172" cy="277" r="3.6"/><circle cx="298" cy="277" r="3.6"/><circle cx="318" cy="277" r="3.6"/></g>
+              <g fill="#fff" stroke="#E5D9C8" stroke-width=".6"><circle cx="162" cy="276" r="3.6"/><circle cx="182" cy="276" r="3.6"/><circle cx="308" cy="276" r="3.6"/><circle cx="328" cy="276" r="3.6"/></g>
+            </g>
+            <g class="deco deco-estate">
+              <g fill="#D9453D"><circle cx="152" cy="277" r="3.8"/><circle cx="172" cy="277" r="3.8"/><circle cx="182" cy="276" r="3.8"/><circle cx="298" cy="277" r="3.8"/><circle cx="318" cy="277" r="3.8"/></g>
+              <g fill="#F08AA5"><circle cx="162" cy="276" r="3.8"/><circle cx="308" cy="276" r="3.8"/><circle cx="328" cy="276" r="3.8"/></g>
+            </g>
+          </g>
+
+          <!-- NATALE: lucine sul tetto, stella e luci dell'alberello -->
+          <g class="deco deco-natale">
+            <path d="M118 214Q138 226 158 214Q178 226 198 214Q218 226 238 214Q258 226 278 214Q298 226 318 214Q338 226 358 214" fill="none" stroke="#3A2E2A" stroke-width="1.2"/>
+            <circle class="bulb" style="animation-delay:-0.0s" cx="128.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.4s" cx="138.0" cy="220.0" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.7s" cx="148.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-1.1s" cx="168.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.5s" cx="178.0" cy="220.0" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.2s" cx="188.0" cy="218.5" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.6s" cx="208.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-1.0s" cx="218.0" cy="220.0" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.4s" cx="228.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.1s" cx="248.0" cy="218.5" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.5s" cx="258.0" cy="220.0" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-0.9s" cx="268.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.2s" cx="288.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.0s" cx="298.0" cy="220.0" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.4s" cx="308.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-0.7s" cx="328.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.1s" cx="338.0" cy="220.0" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-1.5s" cx="348.0" cy="218.5" r="2.4" fill="#FFD34D"/>
+            <polygon points="384,291 385.5,295 389.7,295.1 386.4,297.8 387.5,301.9 384,299.5 380.5,301.9 381.6,297.8 378.3,295.1 382.5,295" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-.3s" cx="379" cy="314" r="1.8" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-.9s" cx="390" cy="319" r="1.8" fill="#E5483C"/>
+            <circle class="bulb" style="animation-delay:-1.3s" cx="372" cy="330" r="1.8" fill="#4D8BFF"/>
+            <circle class="bulb" style="animation-delay:-.6s" cx="396" cy="333" r="1.8" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-1.1s" cx="366" cy="345" r="1.8" fill="#E5483C"/>
+            <circle class="bulb" style="animation-delay:-.2s" cx="402" cy="346" r="1.8" fill="#46B36B"/>
+          </g>
+
+          <!-- porta: la luce dietro, poi l'anta che si apre -->
+          <rect x="205" y="222" width="70" height="112" rx="2" fill="#3A2E2A"/>
+          <rect x="211" y="228" width="58" height="106" fill="url(#glow)"/>
+          <g class="door-leaf" id="leaf">
+            <g filter="url(#nightF)">
+              <rect x="211" y="228" width="58" height="106" fill="var(--door)"/>
+              <rect x="217" y="234" width="20" height="38" rx="2" fill="var(--door-deep)"/>
+              <rect x="243" y="234" width="20" height="38" rx="2" fill="var(--door-deep)"/>
+              <rect x="217" y="278" width="20" height="48" rx="2" fill="var(--door-deep)"/>
+              <rect x="243" y="278" width="20" height="48" rx="2" fill="var(--door-deep)"/>
+              <circle cx="262" cy="284" r="3.2" fill="var(--brass)"/>
+              <g class="deco deco-natale">
+                <circle cx="240" cy="252" r="9" fill="none" stroke="#2E6B3A" stroke-width="5"/>
+                <circle cx="234" cy="247" r="1.6" fill="#E5483C"/><circle cx="247" cy="256" r="1.6" fill="#E5483C"/><circle cx="236" cy="258" r="1.6" fill="#E5483C"/>
+                <polygon points="240,261 234,268 240,265 246,268" fill="#E5483C"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- luce che esce dalla porta sul vialetto -->
+          <polygon class="spill" id="spill" points="211,340 269,340 322,400 158,400" fill="url(#spillGrad)"/>
+          <polygon id="spillNight" points="211,340 269,340 322,400 158,400" fill="url(#spillGrad)" opacity="0"/>
+
+          <!-- HALLOWEEN: la zucca intagliata si accende -->
+          <g class="deco deco-halloween">
+            <polygon points="297,321 302,321 299.5,316" fill="#FFE08A"/>
+            <polygon points="307,321 312,321 309.5,316" fill="#FFE08A"/>
+            <path d="M296 328Q304 335 312 328L309 327L306.5 330L304 327L301.5 330L299 327Z" fill="#FFE08A"/>
+          </g>
+
+          <!-- Halloween: fantasmino alla finestra -->
+          <g class="deco deco-halloween">
+            <path d="M303 274V254C303 245 308 241 313 241C318 241 323 245 323 254V274L319.5 270.5L316.5 274L313 270.5L309.5 274L306.5 270.5Z" fill="#fff" stroke="#C9C2B4" stroke-width=".8"/>
+            <circle cx="309" cy="256" r="1.7" fill="#2B2433"/><circle cx="317" cy="256" r="1.7" fill="#2B2433"/>
+            <ellipse cx="313" cy="263" rx="2" ry="2.6" fill="#2B2433"/>
+          </g>
+        </g>
+
+        <!-- Meteo reale: nebbia, lampi, pioggia, neve (riempito da JavaScript) -->
+        <g id="wx" pointer-events="none">
+          <rect id="fog" width="480" height="400" fill="url(#fogGrad)" opacity="0"/>
+          <g id="bolt" opacity="0"><polygon points="300,30 280,110 298,108 268,196 324,98 304,100 326,30" fill="#FFF7C2"/></g>
+          <g id="rain"></g>
+          <g id="snowfall"></g>
+          <rect id="flash" width="480" height="400" fill="#fff" opacity="0"/>
+        </g>
+
+        <!-- Zone da toccare: finestre (luce) e camino (fumo) -->
+        <g id="hits">
+          <g class="hit" id="hitL" role="button" tabindex="0" aria-pressed="true" aria-label="Luce della finestra di sinistra, accendi o spegni">
+            <title>Accendi o spegni la luce</title><rect x="141" y="233" width="52" height="54"/>
+          </g>
+          <g class="hit" id="hitR" role="button" tabindex="0" aria-pressed="true" aria-label="Luce della finestra di destra, accendi o spegni">
+            <title>Accendi o spegni la luce</title><rect x="287" y="233" width="52" height="54"/>
+          </g>
+          <g class="hit" id="hitC" role="button" tabindex="0" aria-label="Camino, fai uscire più fumo">
+            <title>Un po' di fumo</title><rect x="286" y="66" width="40" height="106"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <section>
+    <p class="who" id="who"></p>
+
+    <h1 class="days" aria-live="off">
+      <span class="days-num" id="days">--</span>
+      <span class="days-label" id="daysLabel">giorni</span>
+    </h1>
+
+    <p class="clock" id="clock" aria-hidden="true">
+      <b id="h">--</b><span>ore</span><b id="m">--</b><span>min</span><b id="s">--</b><span>sec</span>
+    </p>
+
+    <p class="sr-only" id="srText" aria-live="polite"></p>
+
+    <p class="when" id="when"></p>
+
+    <p class="weather" id="weather" hidden></p>
+
+    <p class="note" id="note"></p>
+  </section>
+
+</main>
+
+<section class="steps" id="stepsSection">
+  <h2>Le tappe</h2>
+  <ol id="steps"></ol>
+</section>
+</div>
+
+<script>
+/* =========================================================
+   MODIFICA SOLO QUESTA PARTE
+   ========================================================= */
+const CONFIG = {
+  // Il giorno (e l'ora) in cui avete le chiavi. Formato: AAAA-MM-GGTHH:MM:SS
+  target: "2027-05-13T18:00:00",
+
+  // Il giorno in cui avete deciso: serve a far aprire la porta piano piano.
+  start: "2026-10-16T00:00:00",
+
+  // Nomi o soprannomi, come preferite.
+  names: "Popo & Popa",
+
+  // Il luogo per alba e tramonto. Per ora Roma; quando sapete la città della casa,
+  // cambiate le coordinate (latitudine, longitudine). Il fuso orario resta Europe/Rome.
+  place: { name: "Roma", lat: 41.9028, lon: 12.4964, tz: "Europe/Rome" },
+
+  // Meteo reale: la pagina legge le condizioni attuali da Open-Meteo (gratuito, senza chiave)
+  // e le mostra nella scena. Metti false per spegnerlo.
+  // Anteprima senza aspettare il tempo giusto: ?meteo=pioggia (anche pioggerella, temporale,
+  // neve, nebbia, nuvoloso, sereno) all'indirizzo.
+  weather: true,
+
+  // Quando comincia ogni stagione, nel formato "mese-giorno".
+  // Ora sono le stagioni "meteorologiche" (l'inverno parte il 1 dicembre).
+  // Per quelle astronomiche: primavera "03-20", estate "06-21", autunno "09-23", inverno "12-21".
+  seasonStart: { primavera: "03-01", estate: "06-01", autunno: "09-01", inverno: "12-01" },
+
+  // Le feste hanno decorazioni tutte loro, indipendenti dalla stagione.
+  // "da" e "a" sono nel formato "mese-giorno"; se "a" viene prima di "da" il periodo
+  // attraversa il capodanno (come il Natale, che arriva fino all'Epifania).
+  holidays: {
+    halloween: { from: "10-01", to: "11-02", emoji: "🎃" },
+    natale:    { from: "12-08", to: "01-06", emoji: "🎄" }
+  },
+
+  // La frase in fondo. Lasciala vuota ("") finché non l'avete scelta: in quel caso non viene mostrata.
+  message: "",
+
+  // Le tappe, in ordine. La data è facoltativa: quando la sapete, scrivetela
+  // nel formato "2027-03-20" (oppure "2027-03-20T15:00:00" se volete anche l'ora).
+  // Una tappa con data passata risulta fatta da sola; per segnarne una a mano
+  // senza data, aggiungete done: true.
+  // Se la data è approssimativa, aggiungete label: "inizio novembre": la pagina
+  // mostra quella scritta invece della data. In quel caso scegliete come date
+  // la fine del periodo, così la tappa risulta fatta solo quando è davvero passata.
+  steps: [
+    { title: "Sopralluogo Luigi e Zio Daniele", date: "2026-11-10", label: "inizio novembre" },
+    { title: "Sopralluogo Popi e prime pulizie", date: "2026-12-20", label: "metà dicembre" },
+    { title: "Acquisto del letto", date: "2027-03-31", label: "fine marzo" },
+    { title: "Ultime pulizie", date: "2027-05-01" },
+    { title: "Prima notte", date: "target" }   // "target" = la data del countdown
+  ],
+
+  // Cosa mostrare quando il momento è arrivato.
+  arrivedTitle: "Siamo a casa.",
+  arrivedMessage: "Il countdown è finito. Adesso comincia tutto il resto."
+};
+/* ========================================================= */
+
+const $ = id => document.getElementById(id);
+const target = new Date(CONFIG.target);
+const start = new Date(CONFIG.start);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const pad = n => String(n).padStart(2, "0");
+const plural = (n, one, many) => (n === 1 ? one : many);
+
+function countWeekends(from, to) {
+  // Conta i sabati tra due date.
+  let count = 0;
+  const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  while (d < to) {
+    if (d.getDay() === 6 && d >= new Date(from.getFullYear(), from.getMonth(), from.getDate())) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function setDoor(progress) {
+  const p = Math.min(1, Math.max(0, progress));
+  const open = 0.07 + 0.93 * p;             // parte già un po' socchiusa
+  const scale = 1 - 0.82 * open;            // l'anta si "chiude" verso il cardine = si apre
+  $("leaf").style.transform = "scaleX(" + scale.toFixed(3) + ")";
+  $("spill").style.opacity = (0.15 + 0.85 * p).toFixed(2);
+}
+
+function renderSteps() {
+  const list = $("steps");
+  const steps = CONFIG.steps || [];
+  $("stepsSection").hidden = steps.length === 0;
+  if (!steps.length) return;
+
+  const now = new Date();
+  const allDone = now >= target;
+  const fmt = new Intl.DateTimeFormat("it-IT", { weekday: "long", day: "numeric", month: "long" });
+
+  const items = steps.map(step => {
+    const when = step.date ? (step.date === "target" ? target : new Date(step.date)) : null;
+    return { step, when, done: allDone || step.done === true || !!(when && when <= now) };
+  });
+
+  let nextFound = false;
+  list.innerHTML = "";
+  list.style.setProperty("--n", steps.length);
+
+  items.forEach(({ step, when, done }, i) => {
+    const li = document.createElement("li");
+    li.className = "step";
+
+    // Quanto è piena la linea che porta alla tappa successiva (0–1).
+    let fill = 0;
+    const nxt = items[i + 1];
+    if (done && nxt) {
+      if (nxt.done) fill = 1;
+      else if (when && nxt.when) fill = Math.min(1, Math.max(0, (now - when) / (nxt.when - when)));
+    }
+    li.style.setProperty("--f", fill.toFixed(3));
+
+    const title = document.createElement("span");
+    title.className = "step-title";
+    title.textContent = step.title;
+    li.appendChild(title);
+
+    if (done) {
+      li.classList.add("done");
+    } else if (!nextFound) {
+      nextFound = true;
+      li.classList.add("next");
+      const tag = document.createElement("span");
+      tag.className = "step-tag";
+      tag.textContent = "prossima";
+      title.appendChild(tag);
+    }
+
+    const sub = document.createElement("span");
+    sub.className = "step-date";
+    if (step.label) {
+      sub.textContent = step.label;
+    } else if (when) {
+      const days = Math.ceil((when - now) / 86400000);
+      sub.textContent = fmt.format(when) + (!done && days > 0 ? " · tra " + days + " " + plural(days, "giorno", "giorni") : "");
+    } else {
+      sub.textContent = "data da definire";
+    }
+    li.appendChild(sub);
+
+    list.appendChild(li);
+  });
+}
+
+function render() {
+  const now = new Date();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    document.body.classList.add("arrived");
+    const since = Math.floor((now - target) / 86400000);
+    $("days").textContent = since;
+    $("daysLabel").textContent = plural(since, "giorno a casa", "giorni a casa");
+    $("clock").style.display = "none";
+    $("when").innerHTML = "<strong>" + CONFIG.arrivedTitle + "</strong>";
+    $("note").textContent = CONFIG.arrivedMessage;
+    $("note").hidden = !CONFIG.arrivedMessage;
+    $("srText").textContent = CONFIG.arrivedTitle;
+    document.title = "Siamo a casa 🔑";
+    setDoor(1);
+    return false;
+  }
+
+  const totalSec = Math.floor(diff / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+
+  $("days").textContent = d;
+  $("daysLabel").textContent = plural(d, "giorno", "giorni");
+  $("h").textContent = pad(h);
+  $("m").textContent = pad(m);
+  $("s").textContent = pad(s);
+
+  document.title = d + " " + plural(d, "giorno", "giorni") + " a casa nostra";
+
+  if (s === 0 || !$("srText").textContent) {
+    $("srText").textContent = "Mancano " + d + " " + plural(d, "giorno", "giorni") +
+      ", " + h + " ore e " + m + " minuti.";
+  }
+  return true;
+}
+
+/* ---------- Stagioni ---------- */
+const SEASONS = {
+  autunno:   { label: "autunno",   emoji: "🍂", kind: "leaf",  count: 14, colors: ["#C8553D", "#D98E2B", "#A8452E", "#B98A2E", "#8C6A2A"] },
+  inverno:   { label: "inverno",   emoji: "❄️", kind: "snow",  count: 22, colors: ["#FFFFFF"] },
+  primavera: { label: "primavera", emoji: "🌷", kind: "petal", count: 14, colors: ["#F4B6C8", "#F9D3DC", "#E8C9F0", "#FFFFFF"] },
+  estate:    { label: "estate",    emoji: "☀️", kind: "glow",  count: 12, colors: ["#F4C95D", "#F9DE8C"] }
+};
+
+// "mese-giorno" -> numero confrontabile (es. "12-08" -> 1208)
+const mdKey = s => { const p = s.split("-").map(Number); return p[0] * 100 + p[1]; };
+
+// Data di oggi a Roma. Anteprima: ?data=2026-12-20 all'indirizzo.
+function romeToday() {
+  const real = zoned(new Date(), CONFIG.place.tz);
+  const dp = new URLSearchParams(location.search).get("data");
+  if (dp && /^\d{4}-\d{2}-\d{2}$/.test(dp)) {
+    const a = dp.split("-").map(Number);
+    return { y: a[0], m: a[1], d: a[2], min: real.min };
+  }
+  return real;
+}
+
+// La stagione è quella con l'inizio più recente (CONFIG.seasonStart).
+function seasonFor(t) {
+  const cur = t.m * 100 + t.d;
+  const list = Object.keys(CONFIG.seasonStart)
+    .map(k => [k, mdKey(CONFIG.seasonStart[k])])
+    .sort((a, b) => a[1] - b[1]);
+  let pick = list[list.length - 1][0];          // prima del primo inizio dell'anno: è ancora l'ultima stagione
+  list.forEach(e => { if (e[1] <= cur) pick = e[0]; });
+  return pick;
+}
+
+// Le feste attive oggi (CONFIG.holidays). Anteprima: ?festa=natale (o ?festa=nessuna).
+function activeHolidays(t) {
+  const cur = t.m * 100 + t.d;
+  const forced = new URLSearchParams(location.search).get("festa");
+  return Object.keys(CONFIG.holidays).filter(k => {
+    if (forced) return forced === k;
+    const h = CONFIG.holidays[k], from = mdKey(h.from), to = mdKey(h.to);
+    return from <= to ? (cur >= from && cur <= to) : (cur >= from || cur <= to);
+  });
+}
+
+function shape(kind, c) {
+  switch (kind) {
+    case "leaf":
+      return '<svg viewBox="0 0 24 24"><path d="M12 2C19 7 19 15 12 22C5 15 5 7 12 2Z" fill="' + c + '"/>' +
+             '<path d="M12 22V8" stroke="rgba(0,0,0,.25)" stroke-width="1" fill="none"/></svg>';
+    case "snow":
+      return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff" stroke="#B9CADB" stroke-width="1.5"/></svg>';
+    case "petal":
+      return '<svg viewBox="0 0 24 24"><path d="M12 2C21 6 21 17 12 22C3 17 3 6 12 2Z" fill="' + c + '"/></svg>';
+    default:
+      return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="' + c + '"/></svg>';
+  }
+}
+
+/* ---------- Scena: alberi e prato ---------- */
+// Generatore casuale con seme: gli alberi hanno sempre la stessa forma,
+// cambiano solo le foglie da una stagione all'altra.
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const TREE = {
+  autunno:   { tip: 0.95, per: 4, mid: 0.7, midPer: 2, rmin: 3,   rmax: 6.5, colors: ["#E8B93C", "#D98E2B", "#C8553D", "#F1D06B", "#B98A2E"] },
+  inverno:   { tip: 0.45, per: 1, mid: 0,   midPer: 0, rmin: 1.6, rmax: 3,   colors: ["#FFFFFF"], stroke: "#C3D2E1" },
+  primavera: { tip: 1,    per: 4, mid: 0.6, midPer: 2, rmin: 2.5, rmax: 5,   colors: ["#F4B6C8", "#F9D3DC", "#FFFFFF", "#9CC27A"] },
+  estate:    { tip: 1,    per: 6, mid: 0.9, midPer: 4, rmin: 5,   rmax: 9,   colors: ["#4E9440", "#5FA84C", "#3F8236", "#6DB35A"] }
+};
+
+function drawTree(x, y, h, seed, key) {
+  const r = mulberry32(seed);
+  const T = TREE[key];
+  let wood = "", foliage = "";
+
+  const leaf = (px, py) => {
+    const rad = T.rmin + r() * (T.rmax - T.rmin);
+    const c = T.colors[Math.floor(r() * T.colors.length)];
+    foliage += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + rad.toFixed(1) +
+      '" fill="' + c + '"' + (T.stroke ? ' stroke="' + T.stroke + '" stroke-width=".8"' : "") + "/>";
+  };
+
+  function branch(x1, y1, ang, len, w, depth) {
+    const x2 = x1 + Math.sin(ang) * len;
+    const y2 = y1 - Math.cos(ang) * len;
+    wood += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
+      '" y2="' + y2.toFixed(1) + '" stroke-width="' + w.toFixed(1) + '"/>';
+
+    if (depth > 1 && r() < T.mid) {
+      for (let k = 0; k < T.midPer; k++) {
+        leaf(x1 + (x2 - x1) * r() + (r() - 0.5) * 8, y1 + (y2 - y1) * r() + (r() - 0.5) * 8);
+      }
+    }
+    if (depth === 0) {
+      if (r() < T.tip) {
+        for (let k = 0; k < T.per; k++) leaf(x2 + (r() - 0.5) * 14, y2 + (r() - 0.5) * 14);
+      }
+      return;
+    }
+    const n = depth >= 3 ? 2 : (r() < 0.35 ? 3 : 2);
+    for (let i = 0; i < n; i++) {
+      const spread = (i - (n - 1) / 2) * 0.62 + (r() - 0.5) * 0.3;
+      branch(x2, y2, ang + spread, len * (0.7 + r() * 0.1), Math.max(w * 0.68, 0.9), depth - 1);
+    }
+  }
+
+  branch(x, y, (r() - 0.5) * 0.12, h * 0.34, h * 0.048, 4);
+  return '<g stroke="var(--bark)" stroke-linecap="round" fill="none">' + wood + "</g>" + foliage;
+}
+
+function groundDetails(key) {
+  const r = mulberry32(99);
+  let out = "";
+  if (key === "autunno") {
+    const cols = ["#C8553D", "#D98E2B", "#E8B93C", "#A8452E", "#B98A2E"];
+    for (let i = 0; i < 22; i++) {
+      const cx = 14 + r() * 452, cy = 346 + r() * 48;
+      out += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="' + (3 + r() * 2.5).toFixed(1) +
+        '" ry="' + (1.5 + r()).toFixed(1) + '" fill="' + cols[i % cols.length] +
+        '" transform="rotate(' + Math.floor(r() * 180) + " " + cx.toFixed(1) + " " + cy.toFixed(1) + ')"/>';
+    }
+  } else if (key === "primavera" || key === "estate") {
+    const cols = key === "primavera" ? ["#F29BB5", "#FFFFFF", "#F6D45A", "#C9A8EA"] : ["#FFFFFF", "#F6D45A", "#F29BB5"];
+    const n = key === "primavera" ? 30 : 16;
+    for (let i = 0; i < n; i++) {
+      out += '<circle cx="' + (12 + r() * 456).toFixed(1) + '" cy="' + (344 + r() * 50).toFixed(1) +
+        '" r="' + (1.8 + r() * 1.2).toFixed(1) + '" fill="' + cols[i % cols.length] + '"/>';
+    }
+  }
+  return out;
+}
+
+function initScene(key) {
+  $("trees").innerHTML = drawTree(60, 344, 195, 11, key) + drawTree(420, 342, 175, 23, key);
+  $("groundDetails").innerHTML = groundDetails(key);
+  $("stars").innerHTML = starsHtml();
+}
+
+function initSeason() {
+  // Per vedere in anteprima una stagione: aggiungi ?stagione=inverno all'indirizzo.
+  const param = new URLSearchParams(location.search).get("stagione");
+  const today = romeToday();
+  const key = SEASONS[param] ? param : seasonFor(today);
+  const s = SEASONS[key];
+
+  document.body.dataset.season = key;
+
+  // Le feste (Halloween, Natale...) sono un livello a parte rispetto alla stagione.
+  const feste = activeHolidays(today);
+  Object.keys(CONFIG.holidays).forEach(k => document.body.classList.toggle(k, feste.indexOf(k) >= 0));
+
+  initScene(key);
+  $("who").textContent = CONFIG.names + " · " + s.emoji + " " + s.label +
+    feste.map(k => " " + (CONFIG.holidays[k].emoji || "")).join("");
+
+  const sky = $("sky");
+  const n = window.innerWidth < 720 ? Math.round(s.count * 0.6) : s.count;
+
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("span");
+    p.className = "fall" + (s.kind === "glow" ? " rise" : "");
+
+    const size = s.kind === "snow" ? 6 + Math.random() * 9 : 14 + Math.random() * 14;
+    const dur = (s.kind === "snow" ? 12 : 14) + Math.random() * 12;
+
+    p.style.setProperty("--x", (Math.random() * 100).toFixed(1) + "%");
+    p.style.setProperty("--y", (Math.random() * 95).toFixed(1) + "vh");
+    p.style.setProperty("--s", size.toFixed(0) + "px");
+    p.style.setProperty("--d", dur.toFixed(1) + "s");
+    p.style.setProperty("--dl", (-Math.random() * dur).toFixed(1) + "s");
+    p.style.setProperty("--sw", (3 + Math.random() * 3).toFixed(1) + "s");
+    p.style.setProperty("--o", (0.5 + Math.random() * 0.4).toFixed(2));
+    p.innerHTML = shape(s.kind, s.colors[i % s.colors.length]);
+    sky.appendChild(p);
+  }
+}
+
+/* ---------- Sorprese al tocco ---------- */
+const WIN = { L: true, R: true };   // finestre accese / spente
+let DARK = 0;                        // quanto è buio (0–1), aggiornato da applyDaylight
+
+function paintWindows() {
+  // Da spenta la finestra riflette il cielo: chiara di giorno, scura di notte.
+  const off = mix("#A9C0D0", "#16213A", DARK);
+  ["L", "R"].forEach(c => {
+    $("win" + c).setAttribute("fill", WIN[c] ? "var(--light)" : off);
+    $("halo" + c).style.display = WIN[c] ? "" : "none";
+    $("hit" + c).setAttribute("aria-pressed", WIN[c] ? "true" : "false");
+  });
+}
+
+// Qualche nuvoletta di fumo in più dal camino.
+function puff() {
+  if (reduceMotion) return;
+  const g = $("burst");
+  if (g.childElementCount > 40) return;
+  for (let i = 0; i < 7; i++) {
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("class", "smoke burst");
+    c.setAttribute("cx", (303 + Math.random() * 6).toFixed(1));
+    c.setAttribute("cy", "112");
+    c.setAttribute("r", (4 + Math.random() * 3).toFixed(1));
+    c.style.setProperty("--bx", ((Math.random() - 0.2) * 26).toFixed(0) + "px");
+    c.style.animationDelay = (i * 0.18).toFixed(2) + "s";
+    c.addEventListener("animationend", () => c.remove());
+    g.appendChild(c);
+  }
+}
+
+function initTouch() {
+  const activate = (el, fn) => {
+    el.addEventListener("click", fn);
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); }
+    });
+  };
+  activate($("hitL"), () => { WIN.L = !WIN.L; paintWindows(); });
+  activate($("hitR"), () => { WIN.R = !WIN.R; paintWindows(); });
+  activate($("hitC"), puff);
+}
+
+/* ---------- Meteo reale (Open-Meteo) ---------- */
+// Codici meteo WMO -> descrizione e intensità degli effetti (0–1).
+const WMO = {
+  0: { l: "sereno" }, 1: { l: "quasi sereno" }, 2: { l: "poco nuvoloso" }, 3: { l: "coperto" },
+  45: { l: "nebbia", fog: 0.85 }, 48: { l: "nebbia con brina", fog: 0.85 },
+  51: { l: "pioggerella leggera", rain: 0.25 }, 53: { l: "pioggerella", rain: 0.35 }, 55: { l: "pioggerella intensa", rain: 0.5 },
+  56: { l: "pioggerella gelata", rain: 0.35 }, 57: { l: "pioggerella gelata", rain: 0.5 },
+  61: { l: "pioggia leggera", rain: 0.45 }, 63: { l: "pioggia", rain: 0.7 }, 65: { l: "pioggia forte", rain: 1 },
+  66: { l: "pioggia gelata", rain: 0.7 }, 67: { l: "pioggia gelata forte", rain: 0.9 },
+  71: { l: "neve debole", snow: 0.4 }, 73: { l: "neve", snow: 0.7 }, 75: { l: "neve forte", snow: 1 }, 77: { l: "nevischio", snow: 0.3 },
+  80: { l: "rovesci deboli", rain: 0.5 }, 81: { l: "rovesci", rain: 0.8 }, 82: { l: "rovesci forti", rain: 1 },
+  85: { l: "rovesci di neve", snow: 0.6 }, 86: { l: "rovesci di neve forti", snow: 0.9 },
+  95: { l: "temporale", rain: 0.8, storm: true }, 96: { l: "temporale con grandine", rain: 1, storm: true },
+  99: { l: "temporale forte con grandine", rain: 1, storm: true }
+};
+
+// Per l'anteprima con ?meteo=...
+const MOCK_WX = {
+  sereno:      { weather_code: 0,  cloud_cover: 0,   temperature_2m: 18, wind_speed_10m: 6 },
+  nuvoloso:    { weather_code: 3,  cloud_cover: 100, temperature_2m: 14, wind_speed_10m: 10 },
+  pioggerella: { weather_code: 53, cloud_cover: 90,  temperature_2m: 12, wind_speed_10m: 8 },
+  pioggia:     { weather_code: 63, cloud_cover: 100, temperature_2m: 11, wind_speed_10m: 14 },
+  temporale:   { weather_code: 95, cloud_cover: 100, temperature_2m: 16, wind_speed_10m: 30 },
+  neve:        { weather_code: 73, cloud_cover: 100, temperature_2m: -1, wind_speed_10m: 8 },
+  nebbia:      { weather_code: 45, cloud_cover: 100, temperature_2m: 7,  wind_speed_10m: 3 }
+};
+
+let WX = { cover: 0, fog: 0, rain: 0, snow: 0, storm: false, wind: 0, label: "", temp: null };
+let wxSig = "";
+
+function setWeather(cur) {
+  const info = WMO[cur.weather_code] || { l: "" };
+  let cover = typeof cur.cloud_cover === "number" ? cur.cloud_cover / 100 : 0;
+  if (info.rain || info.snow || info.storm) cover = Math.max(cover, 0.85);
+  if (info.fog) cover = Math.max(cover, 0.7);
+  WX = {
+    cover: Math.min(1, cover), fog: info.fog || 0, rain: info.rain || 0, snow: info.snow || 0,
+    storm: !!info.storm, wind: cur.wind_speed_10m || 0, label: info.l, temp: cur.temperature_2m
+  };
+  renderWeather();
+  applyDaylight();
+}
+
+function renderWeather() {
+  const svg = document.querySelector(".door-svg");
+  svg.classList.toggle("storm", WX.storm);
+
+  // Le particelle si ridisegnano solo se cambiano intensità o vento.
+  const sig = [WX.rain.toFixed(2), WX.snow.toFixed(2), Math.round(WX.wind / 10)].join("|");
+  if (sig !== wxSig) {
+    wxSig = sig;
+    const r = mulberry32(31);
+    const drift = Math.min(120, WX.wind * 3.2);          // il vento inclina la pioggia verso sinistra
+    let drops = "", flakes = "";
+
+    const nDrops = Math.round(WX.rain * 110);
+    for (let i = 0; i < nDrops; i++) {
+      const len = 9 + r() * 7;
+      const x = r() * (480 + drift);
+      const d = (0.55 + r() * 0.35) * (1.25 - 0.4 * WX.rain);
+      drops += '<line class="drop" x1="0" y1="0" x2="' + (-drift / 424 * len).toFixed(2) + '" y2="' + len.toFixed(1) +
+        '" style="--x:' + x.toFixed(1) + "px;--y:" + (r() * 400).toFixed(0) + "px;--dx:" + (-drift).toFixed(0) +
+        "px;--d:" + d.toFixed(2) + "s;animation-delay:-" + (r() * d).toFixed(2) + 's"/>';
+    }
+
+    const nFlakes = Math.round(WX.snow * 90);
+    for (let i = 0; i < nFlakes; i++) {
+      const d = 6 + r() * 5;
+      flakes += '<circle class="flake" r="' + (1.4 + r() * 1.6).toFixed(1) +
+        '" style="--x:' + (r() * 480).toFixed(1) + "px;--y:" + (r() * 400).toFixed(0) + "px;--dx:" +
+        (((r() - 0.5) * 50) - drift * 0.3).toFixed(0) + "px;--d:" + d.toFixed(1) +
+        "s;animation-delay:-" + (r() * d).toFixed(1) + 's"/>';
+    }
+    $("rain").innerHTML = drops;
+    $("snowfall").innerHTML = flakes;
+  }
+
+  // Riga di testo con temperatura e condizioni.
+  const night = document.body.classList.contains("night");
+  const emo = WX.storm ? "⛈️" : WX.snow ? "❄️" : WX.rain ? "🌧️" : WX.fog ? "🌫️" :
+    WX.cover > 0.6 ? "☁️" : WX.cover > 0.25 ? "⛅" : (night ? "🌙" : "☀️");
+  if (WX.label && typeof WX.temp === "number") {
+    $("weather").textContent = emo + " " + CONFIG.place.name + ", adesso: " + Math.round(WX.temp) + "° · " + WX.label;
+    $("weather").hidden = false;
+  }
+}
+
+async function loadWeather() {
+  const mock = new URLSearchParams(location.search).get("meteo");
+  if (mock && MOCK_WX[mock]) { setWeather(MOCK_WX[mock]); return; }
+  if (!CONFIG.weather) return;
+  try {
+    const P = CONFIG.place;
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + P.lat + "&longitude=" + P.lon +
+      "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m&timezone=" + encodeURIComponent(P.tz);
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 8000);
+    const res = await fetch(url, { signal: ctl.signal });
+    clearTimeout(to);
+    if (!res.ok) return;
+    const j = await res.json();
+    if (j && j.current) setWeather(j.current);
+  } catch (e) {
+    // Senza connessione o se il servizio non risponde, la scena resta com'era.
+  }
+}
+
+/* ---------- Giorno e notte (ora di Roma) ---------- */
+const smooth = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+
+function hex2rgb(h) {
+  h = h.trim().replace("#", "");
+  if (h.length === 3) h = h.split("").map(c => c + c).join("");
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function mix(a, b, t) {
+  const A = hex2rgb(a), B = hex2rgb(b);
+  return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+
+// Data e ora (in minuti dalla mezzanotte) nel fuso orario scelto.
+function zoned(date, tz) {
+  const p = {};
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+  }).formatToParts(date).forEach(x => { p[x.type] = x.value; });
+  return { y: +p.year, m: +p.month, d: +p.day, min: +p.hour * 60 + +p.minute + +p.second / 60 };
+}
+
+// Alba e tramonto calcolati dalla posizione del Sole (nessun servizio esterno).
+// alt = altezza del Sole sull'orizzonte: -0.833 per alba/tramonto, -6 per il crepuscolo civile.
+// Il risultato è in minuti dalla mezzanotte, nell'ora locale del luogo (quindi con ora legale).
+function sunEvent(y, m, d, alt) {
+  const P = CONFIG.place, rad = Math.PI / 180;
+  const jd = Date.UTC(y, m - 1, d, 12) / 86400000 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008);
+  const Js = n - P.lon / 360;
+  const M = (357.5291 + 0.98560028 * Js) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const lam = (M + C + 180 + 102.9372) % 360;
+  const Jt = 2451545.0 + Js + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * lam * rad);
+  const sinD = Math.sin(lam * rad) * Math.sin(23.4397 * rad);
+  const cosD = Math.cos(Math.asin(sinD));
+  const cosW = (Math.sin(alt * rad) - Math.sin(P.lat * rad) * sinD) / (Math.cos(P.lat * rad) * cosD);
+  const w = Math.acos(Math.max(-1, Math.min(1, cosW))) / rad;
+  const toMin = J => zoned(new Date((J - 2440587.5) * 86400000), P.tz).min;
+  return { rise: toMin(Jt - w / 360), set: toMin(Jt + w / 360) };
+}
+
+// Fase lunare (0 = nuova, 0.5 = piena) e forma della parte illuminata.
+function moonPhase(date) {
+  const syn = 29.530588853;
+  const jd = date.getTime() / 86400000 + 2440587.5;
+  return ((((jd - 2451550.1) % syn) + syn) % syn) / syn;
+}
+
+function moonLitPath(r, ph) {
+  const k = Math.cos(2 * Math.PI * ph);
+  const rx = (Math.abs(k) * r).toFixed(2);
+  return "M0 " + (-r) + "A" + r + " " + r + " 0 0 1 0 " + r +
+         "A" + rx + " " + r + " 0 0 " + (k > 0 ? 0 : 1) + " 0 " + (-r) + "Z";
+}
+
+function starsHtml() {
+  const r = mulberry32(5);
+  let out = "";
+  for (let i = 0; i < 48; i++) {
+    out += '<circle class="star" cx="' + (8 + r() * 464).toFixed(1) + '" cy="' + (10 + r() * 220).toFixed(1) +
+      '" r="' + (0.8 + r()).toFixed(1) + '" fill="#fff" style="--tw:' + (2 + r() * 3).toFixed(1) +
+      "s;animation-delay:-" + (r() * 4).toFixed(1) + 's"/>';
+  }
+  return out;
+}
+
+function applyDaylight() {
+  const P = CONFIG.place;
+  const real = romeToday();
+  let t = real.min;
+
+  // Anteprima: aggiungi ?ora=22:30 all'indirizzo per vedere la scena a quell'ora (ora di Roma).
+  const ora = new URLSearchParams(location.search).get("ora");
+  if (ora && /^\d{1,2}:\d{2}$/.test(ora)) {
+    const hm = ora.split(":").map(Number);
+    t = hm[0] * 60 + hm[1];
+  }
+
+  const ev = sunEvent(real.y, real.m, real.d, -0.833);
+  const tw = sunEvent(real.y, real.m, real.d, -6);
+  const rise = ev.rise, set = ev.set, dawn = tw.rise, dusk = tw.set;
+
+  // Quanta luce c'è (0 = notte piena, 1 = giorno pieno).
+  // Al mattino sale dal crepuscolo fino a poco dopo l'alba; la sera scende da poco prima
+  // del tramonto fino al crepuscolo. Al momento esatto di alba/tramonto è ancora luminoso.
+  const m0 = dawn - 10, m1 = rise + 25, e0 = set - 25, e1 = dusk + 10;
+  let light;
+  if (t <= m0 || t >= e1) light = 0;
+  else if (t < m1) light = smooth((t - m0) / (m1 - m0));
+  else if (t <= e0) light = 1;
+  else light = smooth((e1 - t) / (e1 - e0));
+
+  const k = 1 - light;                                   // buio
+  const w = Math.min(1, Math.exp(-Math.pow((t - rise) / 40, 2)) +
+                        Math.exp(-Math.pow((t - set) / 40, 2)));   // luce calda di alba/tramonto
+
+  const svg = document.querySelector(".door-svg");
+  const css = getComputedStyle(document.body);
+  const skyTop = css.getPropertyValue("--sky-top").trim();
+  const skyLow = css.getPropertyValue("--sky-low").trim();
+  const sunCol = css.getPropertyValue("--sun").trim();
+
+  if (/^#/.test(skyTop) && /^#/.test(skyLow)) {
+    let top = mix(skyTop, "#0A1430", k);
+    top = mix(top, "#6C5B8F", 0.25 * w);
+    let low = mix(skyLow, "#25396B", k);
+    low = mix(low, "#F7A96B", 0.55 * w * (1 - 0.6 * k));
+    const f = 0.75 * WX.cover;
+    top = mix(top, mix(WX.storm ? "#5A6370" : "#9AA6B4", "#0F1624", k), f);
+    low = mix(low, mix(WX.storm ? "#8A929C" : "#C9D0D8", "#2A3248", k), f);
+    $("skyTop").setAttribute("stop-color", top);
+    $("skyLow").setAttribute("stop-color", low);
+  }
+
+  // Il paesaggio si scurisce e vira al blu; all'alba e al tramonto prende una luce calda.
+  const r = 1 - 0.60 * k + 0.08 * w, g = 1 - 0.50 * k, b = 1 - 0.28 * k - 0.14 * w;
+  $("nightM").setAttribute("values",
+    [r, 0, 0, 0, 0, 0, g, 0, 0, 0, 0, 0, b, 0, 0, 0, 0, 0, 1, 0].map(v => +v.toFixed(3)).join(" "));
+
+  $("stars").style.opacity = (Math.max(0, (k - 0.4) / 0.6) * (1 - 0.95 * WX.cover)).toFixed(2);
+  $("clouds").setAttribute("opacity", (0.65 * light + 0.12 * k).toFixed(2));
+  $("horizonGlow").setAttribute("opacity", (0.6 * w * (1 - 0.35 * k) * (1 - 0.85 * WX.cover)).toFixed(2));
+
+  // Meteo: nuvole in più (più scure col brutto tempo), nebbia, colore della pioggia.
+  const cm = $("cloudsMore");
+  cm.setAttribute("opacity", (WX.cover * (0.75 * light + 0.16 * k)).toFixed(2));
+  cm.setAttribute("fill", mix("#FFFFFF", "#6F7885", WX.storm ? 0.6 : (WX.rain || WX.snow) ? 0.35 : 0));
+  $("fog").setAttribute("opacity", WX.fog.toFixed(2));
+  ["fog0", "fog1", "fog2"].forEach(id => $(id).setAttribute("stop-color", mix("#E8EEF2", "#1B2742", k)));
+
+  // Sole: sorge a est, tramonta a ovest, passando dietro alle colline.
+  const p = (t - rise) / (set - rise);
+  const sunUp = t > rise - 12 && t < set + 12;
+  $("sun").setAttribute("transform",
+    "translate(" + (60 + 360 * p).toFixed(1) + " " + (292 - 250 * Math.sin(Math.PI * p)).toFixed(1) + ")");
+  $("sun").style.opacity = sunUp ? (1 - 0.85 * WX.cover).toFixed(2) : 0;
+  if (/^#/.test(sunCol)) $("sunDisc").setAttribute("fill", mix(sunCol, "#FF8A3D", 0.65 * w));
+
+  // Luna: sorge al tramonto e tramonta all'alba, con la fase del giorno.
+  const nightLen = 1440 - (set - rise);
+  let q = -1;
+  if (t >= set) q = (t - set) / nightLen;
+  else if (t < rise) q = (t - set + 1440) / nightLen;
+  const moon = $("moon");
+  if (q >= 0 && q <= 1) {
+    const ph = moonPhase(new Date(Date.UTC(real.y, real.m - 1, real.d, 12)));
+    moon.setAttribute("transform",
+      "translate(" + (60 + 360 * q).toFixed(1) + " " + (292 - 240 * Math.sin(Math.PI * q)).toFixed(1) + ")");
+    $("moonLit").setAttribute("d", moonLitPath(14, ph));
+    $("moonLit").setAttribute("transform", ph >= 0.5 ? "scale(-1 1)" : "");
+    moon.style.opacity = (Math.min(1, k * 1.6) * (1 - 0.75 * WX.cover)).toFixed(2);
+  } else {
+    moon.style.opacity = 0;
+  }
+
+  // Finestre e porta: più luminose quando fa buio.
+  const glow = smooth(k * 1.4);
+  $("halos").setAttribute("opacity", (0.7 * glow).toFixed(2));
+  $("spillNight").setAttribute("opacity", (0.6 * glow).toFixed(2));
+
+  svg.style.setProperty("--bat", mix("#2B2433", "#A79BD0", k));
+  svg.style.setProperty("--rain", mix("#CFE0F5", "#7F97BE", k));
+
+  DARK = k;
+  paintWindows();
+  document.body.classList.toggle("night", k > 0.5);
+
+  // Il colore della barra del telefono segue lo sfondo (stagione e notte).
+  const wall = getComputedStyle(document.body).getPropertyValue("--wall").trim();
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta && /^#/.test(wall)) meta.setAttribute("content", wall);
+}
+
+function init() {
+  $("who").textContent = CONFIG.names;
+  initSeason();
+  applyDaylight();
+  initTouch();
+  $("note").textContent = CONFIG.message;
+  $("note").hidden = !CONFIG.message;
+
+  const dateText = new Intl.DateTimeFormat("it-IT", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  }).format(target);
+
+  const weekends = countWeekends(new Date(), target);
+  $("when").innerHTML =
+    "Fino a <strong>" + dateText + "</strong>. " +
+    (weekends > 0
+      ? "Prima delle chiavi: " + weekends + " " + plural(weekends, "weekend", "weekend") + "."
+      : "");
+
+  renderSteps();
+  const running = render();
+
+  // La porta parte chiusa e si apre una volta sola, all'arrivo.
+  const progress = (new Date() - start) / (target - start);
+  if (reduceMotion) {
+    setDoor(progress);
+  } else {
+    $("leaf").style.transform = "scaleX(1)";
+    requestAnimationFrame(() => requestAnimationFrame(() => setDoor(progress)));
+  }
+
+  setInterval(applyDaylight, 60000);
+
+  loadWeather();
+  setInterval(loadWeather, 15 * 60 * 1000);
+
+  if (running) {
+    setInterval(() => {
+      if (!render()) return;
+      // Aggiorna la porta ogni minuto, senza strappi.
+      if (new Date().getSeconds() === 0) {
+        setDoor((new Date() - start) / (target - start));
+        renderSteps();
+      }
+    }, 1000);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
