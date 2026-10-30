@@ -1,0 +1,2463 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto manca a casa nostra</title>
+<meta name="description" content="Il countdown per il giorno in cui andiamo a vivere insieme.">
+<meta property="og:title" content="Quanto manca a casa nostra">
+<meta property="og:description" content="Il countdown per il giorno in cui andiamo a vivere insieme.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EDE5D3">
+
+<!-- Icona e "app" sulla schermata Home (file: manifest.webmanifest, icon-*.png, apple-touch-icon.png) -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Casa nostra">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --wall: #E4EADF;
+    --paper: #F6F7F2;
+    --ink: #1E2B2B;
+    --ink-soft: #4C5C5A;
+    --door: #2F5D62;
+    --door-deep: #244A4E;
+    --brass: #C79A2B;
+    --light: #FFE8A8;
+    --light-edge: #FFD166;
+    --frame: #1E2B2B;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+
+    /* Scena: colori che cambiano con la stagione (default = autunno) */
+    --bark: #6B4B3A;
+    --line: rgba(58, 46, 42, 0.22);
+    --sky-top: #F1D6A2;
+    --sky-low: #FBF0D8;
+    --sun: #FFE9B3;
+    --hill: #C9B574;
+    --ground: #A9A056;
+    --path: #DCCCA6;
+    --roof: #8E4F3A;
+    --roof-dark: #703C2C;
+    --house: #FBF6EA;
+    --bush: #8C8A3A;
+    --bush-stroke: transparent;
+    --bat: #2B2433;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --wall: #16211F;
+      --paper: #101A19;
+      --ink: #EEF2EA;
+      --ink-soft: #AEBBB6;
+      --door: #3F7F85;
+      --door-deep: #2F6268;
+      --frame: #EEF2EA;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { height: 100%; }
+  body { min-height: 100%; }
+
+  body {
+    background: var(--wall);
+    color: var(--ink);
+    font-family: var(--display);
+    display: grid;
+    place-items: center;
+    padding: 2rem 1.25rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    width: 100%;
+    max-width: 70rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  /* ---------- Porta ---------- */
+  .door-wrap { display: flex; justify-content: center; }
+
+  .scene { position: relative; width: 100%; max-width: 34rem; }
+
+  .door-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 12px 26px rgba(30, 43, 43, 0.14));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .door-svg { filter: brightness(0.82) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.35)); }
+  }
+
+  .door-leaf {
+    transform-box: fill-box;
+    transform-origin: 0 50%;
+    transition: transform 2.2s cubic-bezier(.22, .8, .24, 1);
+  }
+
+  .spill {
+    transition: opacity 2.2s ease;
+    opacity: 0;
+  }
+
+  /* ---------- Testo ---------- */
+  .who {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 0.4rem;
+  }
+
+  .days {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    line-height: 0.9;
+  }
+
+  .days-num {
+    font-size: clamp(6rem, 22vw, 12.5rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    font-variation-settings: "opsz" 96;
+  }
+
+  .days-label {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 500;
+    color: var(--door);
+  }
+
+  .clock {
+    margin-top: 1.1rem;
+    font-size: clamp(1.4rem, 3.6vw, 2rem);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  .clock span { color: var(--ink-soft); font-size: 0.7em; margin: 0 0.5em 0 0.15em; }
+  .clock span:last-child { margin-right: 0; }
+
+  .when {
+    margin-top: 1.4rem;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+  }
+
+  .when strong { color: var(--ink); font-weight: 500; }
+
+  .note {
+    margin-top: 1.8rem;
+    padding-top: 1.2rem;
+    border-top: 2px solid var(--brass);
+    max-width: 30rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.3rem;
+    line-height: 1.5;
+  }
+
+  .note[hidden] { display: none; }
+
+  /* ---------- Tappe ---------- */
+  .page { width: 100%; max-width: 70rem; position: relative; z-index: 1; }
+
+  .steps {
+    margin-top: clamp(3rem, 8vw, 5.5rem);
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .steps h2 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 1.4rem;
+  }
+
+  .steps ol { list-style: none; position: relative; }
+
+  .steps { --track: color-mix(in srgb, var(--ink) 18%, transparent); }
+
+  /* Connettore che porta dalla tappa alla successiva; --f = quanto è "percorso" (0–1) */
+  .step::after {
+    content: "";
+    position: absolute;
+    left: calc(0.65rem - 1px);
+    top: 1.45rem;
+    width: 2px;
+    height: calc(100% - 1.3rem);
+    background: linear-gradient(to bottom,
+      var(--door) calc(var(--f, 0) * 100%),
+      var(--track) calc(var(--f, 0) * 100%));
+  }
+
+  .step:last-child::after { display: none; }
+
+  .step {
+    position: relative;
+    padding: 0 0 1.5rem 2.4rem;
+  }
+
+  .step:last-child { padding-bottom: 0; }
+
+  .step::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    background: var(--wall);
+    border: 2px solid var(--ink-soft);
+    z-index: 1;
+  }
+
+  .step-title { font-size: 1.15rem; font-weight: 500; }
+
+  .step-date {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .step.done::before { background: var(--door); border-color: var(--door); }
+  .step.done .step-title { color: var(--ink-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  .step.next::before {
+    background: var(--brass);
+    border-color: var(--brass);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--brass) 28%, transparent);
+  }
+
+  .step.next .step-title { font-weight: 800; }
+
+  /* Striscia orizzontale su schermi larghi; su telefono resta in verticale */
+  @media (min-width: 721px) {
+    .steps { max-width: none; }
+
+    .steps ol {
+      display: grid;
+      grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr));
+    }
+
+    .step::after {
+      left: calc(50% + 0.65rem);
+      top: calc(0.65rem - 1px);
+      width: calc(100% - 1.3rem);
+      height: 2px;
+      background: linear-gradient(to right,
+        var(--door) calc(var(--f, 0) * 100%),
+        var(--track) calc(var(--f, 0) * 100%));
+    }
+
+    .step { padding: 2.3rem 0.6rem 0; text-align: center; }
+    .step:last-child { padding-bottom: 0; }
+
+    .step::before { left: 50%; top: 0; transform: translateX(-50%); }
+
+    .step .step-tag { display: table; margin: 0.5rem auto 0; }
+  }
+
+  .step-tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.55rem;
+    border-radius: 99px;
+    background: var(--brass);
+    color: #1E2B2B;
+    font-size: 0.75rem;
+    font-weight: 800;
+    vertical-align: 0.1em;
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* ---------- Stagioni ---------- */
+  body[data-season="autunno"] {
+    --wall: #EDE5D3;
+    --sky-top: #F1D6A2; --sky-low: #FBF0D8; --sun: #FFE9B3;
+    --hill: #C9B574; --ground: #A9A056; --path: #DCCCA6;
+    --roof: #8E4F3A; --roof-dark: #703C2C; --house: #FBF6EA;
+    --bush: #8C8A3A; --bush-stroke: transparent;
+  }
+  body[data-season="inverno"] {
+    --wall: #E1E9F1;
+    --sky-top: #C9DAEA; --sky-low: #EEF4FA; --sun: #FFFFFF;
+    --hill: #E9F0F7; --ground: #F7FAFD; --path: #DCE6F0;
+    --roof: #6F7F96; --roof-dark: #56657B; --house: #FBF9F4;
+    --bush: #FFFFFF; --bush-stroke: #CFDCE8;
+  }
+  body[data-season="primavera"] {
+    --wall: #E7EFDB;
+    --sky-top: #BFE2F4; --sky-low: #EAF6FB; --sun: #FFE27A;
+    --hill: #A8D28A; --ground: #8CC566; --path: #E5D8B9;
+    --roof: #B25A41; --roof-dark: #8F452F; --house: #FFF8EC;
+    --bush: #6FA85A; --bush-stroke: transparent;
+  }
+  body[data-season="estate"] {
+    --wall: #F1EBD2;
+    --sky-top: #9FD3F0; --sky-low: #DDF0FA; --sun: #FFD84D;
+    --hill: #8FBF6A; --ground: #6FAE4E; --path: #E8DBB8;
+    --roof: #B25A41; --roof-dark: #8F452F; --house: #FFF6E4;
+    --bush: #4E9440; --bush-stroke: transparent;
+  }
+
+  /* Elementi della scena */
+  .wall  { fill: var(--house); stroke: var(--line); stroke-width: 1.5; }
+  .bush  { fill: var(--bush); stroke: var(--bush-stroke); stroke-width: 1; }
+
+  .smoke {
+    fill: #fff;
+    stroke: #D4DDE6;
+    stroke-width: 0.8;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: puff 5.4s ease-out infinite;
+  }
+
+  @keyframes puff {
+    0%   { opacity: 0;   transform: translate(0, 0) scale(0.6); }
+    20%  { opacity: 0.75; }
+    100% { opacity: 0;   transform: translate(var(--smx, 12px), -38px) scale(1.7); }
+  }
+
+  .bat {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: flutter 1.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes flutter {
+    from { transform: translateY(-4px) scaleY(1); }
+    to   { transform: translateY(4px) scaleY(0.7); }
+  }
+
+  /* Feste: indipendenti dalla stagione, si attivano con una classe sul body (vedi CONFIG.holidays) */
+  .deco-halloween, .deco-natale, .deco-carnevale, .deco-pasqua, .deco-liberazione, .deco-lavoratori { display: none; }
+  body.halloween .deco-halloween { display: block; }
+  body.natale .deco-natale { display: block; }
+  body.carnevale .deco-carnevale { display: block; }
+  body.pasqua .deco-pasqua { display: block; }
+  body.liberazione .deco-liberazione { display: block; }
+  body.lavoratori .deco-lavoratori { display: block; }
+
+  /* Compleanno: ha la precedenza su tutto il resto, solo per quel giorno */
+  .deco-compleanno { display: none; }
+  body.compleanno .deco-compleanno { display: block; }
+  body.compleanno .deco-halloween, body.compleanno .deco-natale, body.compleanno .deco-carnevale,
+  body.compleanno .deco-pasqua, body.compleanno .deco-liberazione, body.compleanno .deco-lavoratori,
+  body.compleanno .deco.pumpkins { display: none; }
+
+  .birthday {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 800;
+    color: var(--door);
+    margin: 0 0 0.7rem;
+  }
+  .birthday[hidden] { display: none; }
+
+  .flame {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: flicker 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes flicker {
+    from { transform: scale(1, 1); }
+    to   { transform: scale(0.82, 1.18); }
+  }
+
+  /* Per il 25 aprile e il 1 maggio i fiori delle fioriere diventano garofani rossi */
+  body.liberazione .deco.flowers, body.lavoratori .deco.flowers { display: none; }
+
+  .flag {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: flagwave var(--flagp, 2.4s) ease-in-out infinite alternate;
+  }
+
+  @keyframes flagwave {
+    from { transform: skewY(-4deg) scaleX(1); }
+    to   { transform: skewY(4deg) scaleX(0.93); }
+  }
+
+  /* Col Natale le zucche di stagione lasciano il posto ai regali */
+  body.natale .deco.pumpkins { display: none; }
+
+  .bulb { animation: bulb 1.6s ease-in-out infinite alternate; }
+
+  @keyframes bulb {
+    from { opacity: 0.45; }
+    to   { opacity: 1; }
+  }
+
+  /* ---------- Sorprese al tocco ---------- */
+  .door-svg { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .hit rect { fill: transparent; cursor: pointer; }
+  .hit:focus { outline: none; }
+  .hit:focus-visible rect { stroke: var(--brass); stroke-width: 2; rx: 4; }
+
+  /* Fumo extra quando si tocca il camino (una volta sola, poi sparisce) */
+  .smoke.burst { animation: puffBig 3.6s ease-out forwards; }
+
+  @keyframes puffBig {
+    0%   { opacity: 0;    transform: translate(0, 0) scale(0.6); }
+    18%  { opacity: 0.85; }
+    100% { opacity: 0;    transform: translate(var(--bx, 14px), -70px) scale(2.1); }
+  }
+
+  /* ---------- Vento sugli alberi ---------- */
+  .tree { animation: treesway var(--tp, 4.2s) ease-in-out infinite alternate; }
+
+  @keyframes treesway {
+    from { transform: rotate(calc(var(--lean, 0deg) - var(--amp, 0.3deg))); }
+    to   { transform: rotate(calc(var(--lean, 0deg) + var(--amp, 0.3deg))); }
+  }
+
+  /* ---------- Abitanti: gatto, uccellini, stelle cadenti, lucciole ---------- */
+  .cat .cat-sleep, .cat .zzz { display: none; }
+  .cat.asleep .cat-eyes { display: none; }
+  .cat.asleep .cat-sleep, .cat.asleep .zzz { display: inline; }
+
+  .cat-tail {
+    transform-box: fill-box;
+    transform-origin: 0% 100%;
+    animation: cattail 2.6s ease-in-out infinite alternate;
+  }
+  @keyframes cattail {
+    from { transform: rotate(-8deg); }
+    to   { transform: rotate(14deg); }
+  }
+
+  .cat-eyes {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: catblink 5.5s infinite;
+  }
+  @keyframes catblink {
+    0%, 94%, 100% { transform: scaleY(1); }
+    97%           { transform: scaleY(0.1); }
+  }
+
+  .cat.pet .cat-anim {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: catstretch 0.9s ease-out;
+  }
+  @keyframes catstretch {
+    0%   { transform: scale(1, 1); }
+    35%  { transform: scale(1.14, 0.86); }
+    70%  { transform: scale(0.94, 1.1); }
+    100% { transform: scale(1, 1); }
+  }
+
+  .zzz text { animation: zfloat 2.4s ease-in-out infinite alternate; }
+  @keyframes zfloat {
+    from { opacity: 0.3; transform: translateY(1px); }
+    to   { opacity: 1;   transform: translateY(-2px); }
+  }
+
+  .heart-pop { animation: heartpop 1.6s ease-out forwards; }
+  @keyframes heartpop {
+    0%   { opacity: 0; transform: translate(var(--hx), var(--hy)) scale(0.6); }
+    15%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--hx), calc(var(--hy) - 26px)) scale(1.3); }
+  }
+
+  .flyer { animation: fly var(--d, 9s) linear forwards; }
+  @keyframes fly {
+    from { transform: translate(var(--x0), var(--y0)); }
+    to   { transform: translate(var(--x1), var(--y1)); }
+  }
+  .bobber { animation: bob 0.9s ease-in-out infinite alternate; }
+  @keyframes bob {
+    from { transform: translateY(-3px); }
+    to   { transform: translateY(3px); }
+  }
+  .wing {
+    transform-box: fill-box;
+    transform-origin: 85% 100%;
+    animation: wingflap 0.26s ease-in-out infinite alternate;
+  }
+  @keyframes wingflap {
+    from { transform: scaleY(1); }
+    to   { transform: scaleY(-0.65); }
+  }
+
+  .meteor { opacity: 0; animation: shoot 1.2s ease-out forwards; }
+  @keyframes shoot {
+    0%   { opacity: 0; transform: translate(var(--x0), var(--y0)); }
+    12%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(calc(var(--x0) + 170px), calc(var(--y0) + 70px)); }
+  }
+
+  .ff {
+    animation: ffmove var(--m, 8s) ease-in-out infinite alternate, ffblink var(--b, 2.4s) ease-in-out infinite alternate;
+  }
+  @keyframes ffmove {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(var(--dx), var(--dy)); }
+  }
+  @keyframes ffblink {
+    from { opacity: 0.05; }
+    to   { opacity: 1; }
+  }
+
+  /* ---------- Pulsante dei suoni ---------- */
+  .sound {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sound:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+  .sound[hidden] { display: none; }
+  .sound[aria-pressed="false"] .waves { display: none; }
+  .sound[aria-pressed="true"] .slash { display: none; }
+
+  /* ---------- Meteo ---------- */
+  .weather { margin-top: 0.5rem; font-size: 1rem; color: var(--ink-soft); }
+  .weather[hidden] { display: none; }
+
+  .drop {
+    stroke: var(--rain, #CFE0F5);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    opacity: 0.75;
+    animation: raindrop var(--d) linear infinite;
+  }
+
+  .flake {
+    fill: #fff;
+    stroke: #C3D2E1;
+    stroke-width: 0.5;
+    animation: flakefall var(--d) linear infinite;
+  }
+
+  @keyframes raindrop {
+    from { transform: translate(var(--x), -24px); }
+    to   { transform: translate(calc(var(--x) + var(--dx)), 424px); }
+  }
+
+  @keyframes flakefall {
+    from { transform: translate(var(--x), -10px); }
+    to   { transform: translate(calc(var(--x) + var(--dx)), 410px); }
+  }
+
+  .storm #flash { animation: lampo 7s linear infinite; }
+  .storm #bolt  { animation: lampo 7s linear infinite; }
+
+  @keyframes lampo {
+    0%, 91%, 100% { opacity: 0; }
+    92% { opacity: 0.75; }
+    93.5% { opacity: 0.1; }
+    95% { opacity: 0.6; }
+    97% { opacity: 0; }
+  }
+
+  /* ---------- Notte ---------- */
+  .star { animation: twinkle var(--tw, 3s) ease-in-out infinite alternate; }
+
+  @keyframes twinkle {
+    from { opacity: 0.35; }
+    to   { opacity: 1; }
+  }
+
+  body { transition: background-color 1.5s ease, color 1.5s ease; }
+
+  /* Quando fa notte (ora di Roma) anche la pagina passa al tema scuro */
+  body.night {
+    --ink: #EEF2EA;
+    --ink-soft: #AEBBB6;
+    --door: #3F7F85;
+    --door-deep: #2F6268;
+    --frame: #EEF2EA;
+  }
+  body.night[data-season="autunno"]   { --wall: #211C15; }
+  body.night[data-season="inverno"]   { --wall: #151D27; }
+  body.night[data-season="primavera"] { --wall: #17211A; }
+  body.night[data-season="estate"]    { --wall: #221F14; }
+
+  @media (prefers-color-scheme: dark) {
+    body[data-season="autunno"]   { --wall: #211C15; }
+    body[data-season="inverno"]   { --wall: #151D27; }
+    body[data-season="primavera"] { --wall: #17211A; }
+    body[data-season="estate"]    { --wall: #221F14; }
+  }
+
+  .sky {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fall {
+    position: absolute;
+    top: 0;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    opacity: var(--o, 0.75);
+    animation: fall var(--d) linear var(--dl) infinite;
+    will-change: transform;
+  }
+
+  .fall svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: sway var(--sw) ease-in-out var(--dl) infinite alternate;
+  }
+
+  .fall.rise { animation: rise var(--d) ease-in-out var(--dl) infinite; }
+  .fall.rise svg { filter: drop-shadow(0 0 5px #F4C95D); }
+
+  @keyframes fall {
+    from { transform: translate3d(0, -12vh, 0); }
+    to   { transform: translate3d(var(--wdx, 0vw), 112vh, 0); }
+  }
+
+  @keyframes rise {
+    0%   { transform: translate3d(0, 105vh, 0); opacity: 0; }
+    15%  { opacity: var(--o, 0.75); }
+    85%  { opacity: var(--o, 0.75); }
+    100% { transform: translate3d(0, -10vh, 0); opacity: 0; }
+  }
+
+  @keyframes sway {
+    from { transform: translateX(-16px) rotate(-30deg); }
+    to   { transform: translateX(16px) rotate(40deg); }
+  }
+
+  /* Decorazioni sulla porta: se ne vede una sola, quella della stagione */
+  .deco { display: none; }
+  body[data-season="autunno"]   .deco-autunno,
+  body[data-season="inverno"]   .deco-inverno,
+  body[data-season="primavera"] .deco-primavera,
+  body[data-season="estate"]    .deco-estate { display: block; }
+
+  /* ---------- Stato "ci siamo" ---------- */
+  body.arrived .days-label { color: var(--brass); }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 720px) {
+    main { grid-template-columns: 1fr; text-align: center; }
+    .days { justify-content: center; }
+    .note { margin-left: auto; margin-right: auto; }
+    .scene { max-width: 26rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door-leaf, .spill { transition: none; }
+    .fall, .fall.rise, .fall svg, .smoke, .bat, .star, .bulb, .flag, .flame { animation: none; }
+    .smoke { opacity: 0.55; }
+    .drop, .flake { animation: none; transform: translate(var(--x), var(--y)); }
+    .tree { animation: none; transform: rotate(var(--lean, 0deg)); }
+    .cat-tail, .cat-eyes, .zzz text, .ff, .bobber, .wing { animation: none; }
+    .storm #flash, .storm #bolt { animation: none; }
+    .fall { top: var(--y); }
+  }
+</style>
+</head>
+
+<body>
+<div class="sky" id="sky" aria-hidden="true"></div>
+<div class="page">
+<main>
+
+  <div class="door-wrap">
+    <div class="scene">
+    <svg class="door-svg" viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="La nostra casetta">
+      <defs>
+        <clipPath id="sceneClip"><rect width="480" height="400" rx="28"/></clipPath>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="skyTop" offset="0" stop-color="var(--sky-top)"/>
+          <stop id="skyLow" offset="1" stop-color="var(--sky-low)"/>
+        </linearGradient>
+        <linearGradient id="horizonGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FF9A5A" stop-opacity="0"/>
+          <stop offset="1" stop-color="#FF9A5A" stop-opacity="1"/>
+        </linearGradient>
+        <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--light-edge)"/>
+          <stop offset="1" stop-color="var(--light)"/>
+        </linearGradient>
+        <linearGradient id="spillGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--light-edge)" stop-opacity=".6"/>
+          <stop offset="1" stop-color="var(--light-edge)" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="halo">
+          <stop offset="0" stop-color="var(--light-edge)" stop-opacity=".85"/>
+          <stop offset="1" stop-color="var(--light-edge)" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="fogGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="fog0" offset="0" stop-color="#E8EEF2" stop-opacity=".25"/>
+          <stop id="fog1" offset=".55" stop-color="#E8EEF2" stop-opacity=".55"/>
+          <stop id="fog2" offset="1" stop-color="#E8EEF2" stop-opacity=".8"/>
+        </linearGradient>
+        <filter id="nightF" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feColorMatrix id="nightM" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+        </filter>
+      </defs>
+
+      <g clip-path="url(#sceneClip)">
+        <rect width="480" height="400" fill="url(#skyGrad)"/>
+        <rect id="horizonGlow" x="0" y="150" width="480" height="160" fill="url(#horizonGrad)" opacity="0"/>
+
+        <!-- stelle (disegnate da JavaScript) -->
+        <g id="stars" opacity="0"></g>
+
+        <!-- sole: si sposta lungo il cielo in base all'ora -->
+        <g id="sun">
+          <circle id="sunDisc" r="20" fill="var(--sun)" opacity=".95"/>
+          <path class="deco deco-estate" d="M0 -36V-26M0 26V36M-36 0H-26M26 0H36M-18.4 -18.4L-25.5 -25.5M18.4 -18.4L25.5 -25.5M-18.4 18.4L-25.5 25.5M18.4 18.4L25.5 25.5" stroke="#FFD84D" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </g>
+
+        <!-- luna: fase reale del giorno -->
+        <g id="moon" opacity="0">
+          <circle r="26" fill="#F4F1E4" opacity=".12"/>
+          <circle r="14" fill="#2B3558"/>
+          <path id="moonLit" d="" fill="#F4F1E4"/>
+        </g>
+
+        <g id="clouds" fill="#fff" opacity=".65">
+          <ellipse cx="96" cy="64" rx="34" ry="11"/><ellipse cx="116" cy="56" rx="22" ry="10"/><ellipse cx="78" cy="58" rx="16" ry="8"/>
+          <ellipse cx="318" cy="98" rx="24" ry="8"/><ellipse cx="332" cy="91" rx="14" ry="7"/>
+        </g>
+
+        <g id="cloudsMore" fill="#fff" opacity="0">
+          <ellipse cx="200" cy="40" rx="40" ry="12"/><ellipse cx="228" cy="32" rx="26" ry="11"/>
+          <ellipse cx="400" cy="46" rx="36" ry="11"/><ellipse cx="372" cy="54" rx="22" ry="9"/>
+          <ellipse cx="40" cy="120" rx="34" ry="10"/><ellipse cx="450" cy="130" rx="30" ry="10"/>
+          <ellipse cx="250" cy="150" rx="46" ry="12"/><ellipse cx="280" cy="142" rx="28" ry="11"/>
+          <ellipse cx="140" cy="20" rx="44" ry="12"/><ellipse cx="320" cy="14" rx="40" ry="11"/>
+        </g>
+
+        <!-- arcobaleno: compare dopo la pioggia, quando c'è il sole, dalla parte opposta al sole -->
+        <g id="rainbow" opacity="0" transform="translate(240 0)" fill="none" stroke-width="4.2">
+          <path d="M-146 306A146 146 0 0 1 146 306" stroke="#E5483C"/><path d="M-142 306A142 142 0 0 1 142 306" stroke="#F08A3C"/><path d="M-138 306A138 138 0 0 1 138 306" stroke="#F6D45A"/><path d="M-134 306A134 134 0 0 1 134 306" stroke="#6DBE6D"/><path d="M-130 306A130 130 0 0 1 130 306" stroke="#5AC8D8"/><path d="M-126 306A126 126 0 0 1 126 306" stroke="#4D8BFF"/><path d="M-122 306A122 122 0 0 1 122 306" stroke="#9B6AD6"/>
+        </g>
+
+        <!-- Halloween: pipistrelli nel cielo -->
+        <g class="deco deco-halloween">
+          <g transform="translate(150 98) scale(1.1)"><path class="bat" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+          <g transform="translate(222 62) scale(.8)"><path class="bat" style="animation-delay:-.8s" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+          <g transform="translate(338 112) scale(.9)"><path class="bat" style="animation-delay:-1.5s" d="M0 0C-4 -4 -9 -4 -14 0C-10 -1 -8 1 -6 4C-4 2 -2 2 0 5C2 2 4 2 6 4C8 1 10 -1 14 0C9 -4 4 -4 0 0Z" fill="var(--bat)"/></g>
+        </g>
+
+        <!-- Paesaggio: di notte si scurisce e si fa blu -->
+        <g id="scenery" filter="url(#nightF)">
+
+        <!-- colline e prato -->
+        <path d="M0 306Q96 268 196 296T372 288T480 300L480 400L0 400Z" fill="var(--hill)"/>
+        <path d="M0 338Q120 326 240 334T480 330L480 400L0 400Z" fill="var(--ground)"/>
+
+        <!-- alberi (disegnati da JavaScript, cambiano con la stagione) -->
+        <g id="trees"></g>
+
+        <!-- vialetto -->
+        <polygon points="206,340 274,340 336,400 144,400" fill="var(--path)"/>
+
+        <!-- camino e fumo -->
+        <rect x="296" y="124" width="20" height="50" fill="#8A5A48"/>
+        <rect x="292" y="118" width="28" height="8" rx="1.5" fill="#6E4636"/>
+        <g class="deco deco-autunno deco-inverno">
+          <circle class="smoke" cx="306" cy="110" r="5"/>
+          <circle class="smoke" style="animation-delay:-1.7s" cx="306" cy="110" r="5"/>
+          <circle class="smoke" style="animation-delay:-3.4s" cx="306" cy="110" r="5"/>
+        </g>
+        <g id="burst"></g>
+
+        <!-- casa -->
+        <rect class="wall" x="130" y="213" width="220" height="121"/>
+        <polygon points="112,210 240,110 368,210" fill="var(--roof)"/>
+        <rect x="112" y="205" width="256" height="8" rx="2" fill="var(--roof-dark)"/>
+        <circle cx="240" cy="170" r="11" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M240 159V181M229 170H251" stroke="#5A463C" stroke-width="2"/>
+
+        <!-- finestre -->
+        <rect x="146" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M167 238V278M146 258H188" stroke="#5A463C" stroke-width="2.5"/>
+        <rect x="142" y="278" width="50" height="5" rx="1.5" fill="#5A463C"/>
+        <rect x="292" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+        <path d="M313 238V278M292 258H334" stroke="#5A463C" stroke-width="2.5"/>
+        <rect x="288" y="278" width="50" height="5" rx="1.5" fill="#5A463C"/>
+
+        
+
+        <rect x="199" y="334" width="82" height="6" rx="2" fill="#B9AC94"/>
+
+        <!-- cespugli agli angoli della casa -->
+        <ellipse class="bush" cx="140" cy="331" rx="20" ry="12"/>
+        <ellipse class="bush" cx="156" cy="337" rx="12" ry="8"/>
+        <ellipse class="bush" cx="340" cy="331" rx="20" ry="12"/>
+        <ellipse class="bush" cx="324" cy="337" rx="12" ry="8"/>
+
+        <!-- foglie cadute / fiori sul prato (disegnati da JavaScript) -->
+        <g id="groundDetails"></g>
+
+        <!-- AUTUNNO: zucche (spariscono quando comincia il Natale) -->
+        <g class="deco deco-autunno pumpkins">
+          <ellipse cx="180" cy="327" rx="13" ry="10.5" fill="#E8892B"/>
+          <ellipse cx="180" cy="327" rx="5.5" ry="10.5" fill="#D1731A" opacity=".45"/>
+          <rect x="178" y="314" width="4" height="6" rx="1.5" fill="#5B7A3A"/>
+          <ellipse cx="326" cy="332" rx="9" ry="7.5" fill="#D86F1B"/>
+          <rect x="324" y="323" width="3.5" height="5" rx="1.5" fill="#5B7A3A"/>
+          <ellipse cx="304" cy="324" rx="17" ry="14" fill="#E07B24"/>
+          <ellipse cx="304" cy="324" rx="7" ry="14" fill="#C25F14" opacity=".4"/>
+          <rect x="302" y="308" width="5" height="7" rx="1.5" fill="#5B7A3A"/>
+          
+          
+          
+        </g>
+
+        <!-- INVERNO: neve sul tetto, cumuli, pupazzo -->
+        <g class="deco deco-inverno">
+          <path d="M116 208L240 114L364 208" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="291" y="113" width="30" height="7" rx="3" fill="#fff"/>
+          <path d="M126 336Q150 322 178 336ZM302 336Q326 322 354 336Z" fill="#fff" stroke="#D3DEE9"/>
+          <circle cx="92" cy="368" r="15" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="92" cy="346" r="11" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="92" cy="329" r="8.5" fill="#fff" stroke="#CFDCE8"/>
+          <circle cx="89" cy="327" r="1.1" fill="#3A2E2A"/><circle cx="95" cy="327" r="1.1" fill="#3A2E2A"/>
+          <polygon points="92,330 103,332 92,334" fill="#F08A3C"/>
+          <rect x="83" y="336" width="18" height="4" rx="2" fill="#C8553D"/>
+          <circle cx="92" cy="346" r="1.2" fill="#3A2E2A"/><circle cx="92" cy="352" r="1.2" fill="#3A2E2A"/>
+        </g>
+
+        <!-- NATALE: regali e alberello -->
+        <g class="deco deco-natale">
+          <rect x="160" y="322" width="20" height="14" rx="1.5" fill="#C8402F"/>
+          <path d="M170 322V336M160 329H180" stroke="#F2C94C" stroke-width="2.2"/>
+          <rect x="181" y="327" width="15" height="9" rx="1.5" fill="#2E7D4F"/>
+          <path d="M188.5 327V336M181 331.5H196" stroke="#F2C94C" stroke-width="2"/>
+          <rect x="381" y="342" width="6" height="8" fill="#6B4B3A"/>
+          <polygon points="384,298 368,322 400,322" fill="#2E6B3A"/>
+          <polygon points="384,310 363,336 405,336" fill="#2F7440"/>
+          <polygon points="384,324 358,350 410,350" fill="#2E6B3A"/>
+          <circle cx="378" cy="318" r="2.6" fill="#E5483C"/><circle cx="391" cy="330" r="2.8" fill="#F2C94C"/>
+          <circle cx="374" cy="340" r="3" fill="#4D8BFF"/><circle cx="394" cy="344" r="3" fill="#E5483C"/>
+          <circle cx="384" cy="332" r="2.6" fill="#F2C94C"/>
+        </g>
+
+        <!-- CARNEVALE: bandierine, palloncini, coriandoli -->
+        <g class="deco deco-carnevale">
+          <path d="M118 214Q138 226 158 214Q178 226 198 214Q218 226 238 214Q258 226 278 214Q298 226 318 214Q338 226 358 214" fill="none" stroke="#3A2E2A" stroke-width="1.2"/>
+          <polygon points="124.0,219.0 136.0,219.0 130.0,232.0" fill="#E5483C"/><polygon points="140.0,219.0 152.0,219.0 146.0,232.0" fill="#F2C94C"/><polygon points="164.0,219.0 176.0,219.0 170.0,232.0" fill="#46B36B"/><polygon points="180.0,219.0 192.0,219.0 186.0,232.0" fill="#4D8BFF"/><polygon points="204.0,219.0 216.0,219.0 210.0,232.0" fill="#B05FD6"/><polygon points="220.0,219.0 232.0,219.0 226.0,232.0" fill="#F08AA5"/><polygon points="244.0,219.0 256.0,219.0 250.0,232.0" fill="#E5483C"/><polygon points="260.0,219.0 272.0,219.0 266.0,232.0" fill="#F2C94C"/><polygon points="284.0,219.0 296.0,219.0 290.0,232.0" fill="#46B36B"/><polygon points="300.0,219.0 312.0,219.0 306.0,232.0" fill="#4D8BFF"/><polygon points="324.0,219.0 336.0,219.0 330.0,232.0" fill="#B05FD6"/><polygon points="340.0,219.0 352.0,219.0 346.0,232.0" fill="#F08AA5"/>
+          <path d="M166 304L181 334M182 296L181 334M196 306L181 334" stroke="#6B5B53" stroke-width="1" fill="none"/>
+          <ellipse cx="166" cy="296" rx="9.5" ry="11.5" fill="#E5483C"/><ellipse cx="162.5" cy="291.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <ellipse cx="182" cy="288" rx="9.5" ry="11.5" fill="#F2C94C"/><ellipse cx="178.5" cy="283.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <ellipse cx="197" cy="298" rx="9.5" ry="11.5" fill="#4D8BFF"/><ellipse cx="193.5" cy="293.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <rect x="160.4" y="353.5" width="5.6" height="2.6" rx=".8" fill="#E5483C" transform="rotate(18 160.4 353.5)"/><rect x="385.2" y="350.7" width="5.5" height="2.6" rx=".8" fill="#F2C94C" transform="rotate(129 385.2 350.7)"/><rect x="111.0" y="350.3" width="5.0" height="2.6" rx=".8" fill="#46B36B" transform="rotate(61 111.0 350.3)"/><rect x="55.0" y="367.2" width="6.1" height="2.6" rx=".8" fill="#4D8BFF" transform="rotate(31 55.0 367.2)"/><rect x="442.2" y="377.5" width="5.5" height="2.6" rx=".8" fill="#B05FD6" transform="rotate(15 442.2 377.5)"/><rect x="274.9" y="365.8" width="6.4" height="2.6" rx=".8" fill="#F08AA5" transform="rotate(11 274.9 365.8)"/><rect x="265.6" y="352.7" width="5.0" height="2.6" rx=".8" fill="#E5483C" transform="rotate(138 265.6 352.7)"/><rect x="67.2" y="361.4" width="6.0" height="2.6" rx=".8" fill="#F2C94C" transform="rotate(46 67.2 361.4)"/><rect x="60.6" y="374.6" width="4.5" height="2.6" rx=".8" fill="#46B36B" transform="rotate(24 60.6 374.6)"/><rect x="261.6" y="349.1" width="4.1" height="2.6" rx=".8" fill="#4D8BFF" transform="rotate(52 261.6 349.1)"/><rect x="238.4" y="372.6" width="5.9" height="2.6" rx=".8" fill="#B05FD6" transform="rotate(119 238.4 372.6)"/><rect x="278.7" y="368.7" width="4.7" height="2.6" rx=".8" fill="#F08AA5" transform="rotate(46 278.7 368.7)"/><rect x="329.9" y="358.2" width="5.4" height="2.6" rx=".8" fill="#E5483C" transform="rotate(134 329.9 358.2)"/><rect x="237.8" y="363.2" width="5.1" height="2.6" rx=".8" fill="#F2C94C" transform="rotate(155 237.8 363.2)"/><rect x="457.0" y="351.9" width="5.0" height="2.6" rx=".8" fill="#46B36B" transform="rotate(87 457.0 351.9)"/><rect x="82.7" y="370.4" width="4.1" height="2.6" rx=".8" fill="#4D8BFF" transform="rotate(19 82.7 370.4)"/><rect x="359.6" y="374.7" width="6.2" height="2.6" rx=".8" fill="#B05FD6" transform="rotate(80 359.6 374.7)"/><rect x="167.7" y="363.5" width="5.2" height="2.6" rx=".8" fill="#F08AA5" transform="rotate(116 167.7 363.5)"/><rect x="45.1" y="350.7" width="4.7" height="2.6" rx=".8" fill="#E5483C" transform="rotate(170 45.1 350.7)"/><rect x="43.4" y="382.6" width="4.8" height="2.6" rx=".8" fill="#F2C94C" transform="rotate(147 43.4 382.6)"/><rect x="462.9" y="387.1" width="4.7" height="2.6" rx=".8" fill="#46B36B" transform="rotate(98 462.9 387.1)"/><rect x="414.9" y="363.4" width="6.4" height="2.6" rx=".8" fill="#4D8BFF" transform="rotate(90 414.9 363.4)"/><rect x="90.0" y="351.9" width="4.1" height="2.6" rx=".8" fill="#B05FD6" transform="rotate(73 90.0 351.9)"/><rect x="72.5" y="358.4" width="5.0" height="2.6" rx=".8" fill="#F08AA5" transform="rotate(127 72.5 358.4)"/><rect x="50.4" y="368.5" width="5.4" height="2.6" rx=".8" fill="#E5483C" transform="rotate(35 50.4 368.5)"/><rect x="384.3" y="389.2" width="4.7" height="2.6" rx=".8" fill="#F2C94C" transform="rotate(106 384.3 389.2)"/>
+        </g>
+
+        <!-- PASQUA: uova sul prato, cestino, pulcino -->
+        <g class="deco deco-pasqua">
+          <g transform="translate(46 372)"><ellipse rx="6" ry="8" fill="#F29BB5"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#fff" stroke-width="1.6" fill="none"/></g><g transform="translate(98 366)"><ellipse rx="6" ry="8" fill="#9FD3F0"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#F6D45A" stroke-width="1.6" fill="none"/></g><g transform="translate(134 386)"><ellipse rx="6" ry="8" fill="#F6D45A"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#E5483C" stroke-width="1.6" fill="none"/></g><g transform="translate(352 380)"><ellipse rx="6" ry="8" fill="#C9A8EA"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#fff" stroke-width="1.6" fill="none"/></g><g transform="translate(398 368)"><ellipse rx="6" ry="8" fill="#8DD0A0"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#fff" stroke-width="1.6" fill="none"/></g><g transform="translate(446 384)"><ellipse rx="6" ry="8" fill="#F29BB5"/><path d="M-5.6 -1.5Q0 1.5 5.6 -1.5M-5 3Q0 6 5 3" stroke="#F6D45A" stroke-width="1.6" fill="none"/></g>
+          <path d="M304 322H338L333 338H309Z" fill="#B98550"/>
+          <path d="M306 328H336M308 333H334" stroke="#8A5A3A" stroke-width="1.2"/>
+          <path d="M306 322Q321 298 336 322" fill="none" stroke="#8A5A3A" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="313" cy="321" rx="4.4" ry="5.6" fill="#F29BB5"/><ellipse cx="322" cy="319" rx="4.4" ry="5.6" fill="#F6D45A"/><ellipse cx="331" cy="321" rx="4.4" ry="5.6" fill="#9FD3F0"/>
+          <circle cx="232" cy="372" r="9" fill="#F6D45A"/><circle cx="238" cy="364" r="6" fill="#F6D45A"/>
+          <polygon points="243,364 249,366 243,368" fill="#F08A3C"/><circle cx="240" cy="362.5" r="1.1" fill="#3A2E2A"/>
+        </g>
+
+        <!-- 25 APRILE: tricolore -->
+        <g class="deco deco-liberazione">
+          <path d="M118 214Q138 226 158 214Q178 226 198 214Q218 226 238 214Q258 226 278 214Q298 226 318 214Q338 226 358 214" fill="none" stroke="#3A2E2A" stroke-width="1.2"/>
+          <polygon points="124.0,219.0 136.0,219.0 130.0,232.0" fill="#009246"/><polygon points="140.0,219.0 152.0,219.0 146.0,232.0" fill="#FFFFFF" stroke="#CFC7B3" stroke-width=".8"/><polygon points="164.0,219.0 176.0,219.0 170.0,232.0" fill="#CE2B37"/><polygon points="180.0,219.0 192.0,219.0 186.0,232.0" fill="#009246"/><polygon points="204.0,219.0 216.0,219.0 210.0,232.0" fill="#FFFFFF" stroke="#CFC7B3" stroke-width=".8"/><polygon points="220.0,219.0 232.0,219.0 226.0,232.0" fill="#CE2B37"/><polygon points="244.0,219.0 256.0,219.0 250.0,232.0" fill="#009246"/><polygon points="260.0,219.0 272.0,219.0 266.0,232.0" fill="#FFFFFF" stroke="#CFC7B3" stroke-width=".8"/><polygon points="284.0,219.0 296.0,219.0 290.0,232.0" fill="#CE2B37"/><polygon points="300.0,219.0 312.0,219.0 306.0,232.0" fill="#009246"/><polygon points="324.0,219.0 336.0,219.0 330.0,232.0" fill="#FFFFFF" stroke="#CFC7B3" stroke-width=".8"/><polygon points="340.0,219.0 352.0,219.0 346.0,232.0" fill="#CE2B37"/>
+          <rect x="239" y="62" width="2.4" height="50" fill="#5A463C"/>
+          <g class="flag">
+            <rect x="241.4" y="64" width="12" height="26" fill="#009246"/>
+            <rect x="253.4" y="64" width="12" height="26" fill="#FFFFFF" stroke="#CFC7B3" stroke-width=".8"/>
+            <rect x="265.4" y="64" width="12" height="26" fill="#CE2B37"/>
+          </g>
+        </g>
+
+        <!-- 1 MAGGIO: striscione, elmetto, martello -->
+        <g class="deco deco-lavoratori">
+          <rect x="170" y="186" width="140" height="19" rx="2" fill="#C0262D" stroke="#F6E9D0" stroke-width="1.5"/>
+          <circle cx="175" cy="190" r="1.4" fill="#F6E9D0"/><circle cx="305" cy="190" r="1.4" fill="#F6E9D0"/>
+          <text x="240" y="199.6" text-anchor="middle" style="font-family:var(--display),Arial,sans-serif;font-weight:800;font-size:12px;letter-spacing:1.6px" fill="#F6E9D0">1° MAGGIO</text>
+          <path d="M290 334Q290 316 306 316Q322 316 322 334Z" fill="#F2C230"/>
+          <rect x="286" y="332" width="40" height="4" rx="2" fill="#D9A81C"/>
+          <path d="M306 316V327" stroke="#D9A81C" stroke-width="2"/>
+          <path d="M190 336L182 304" stroke="#8A5A3A" stroke-width="3.6" stroke-linecap="round"/>
+          <polygon points="171,300 190,295 192,304 173,309" fill="#6B7280"/>
+        </g>
+
+        <!-- COMPLEANNO: striscione, festoni, regali, palloncini, torta -->
+        <g class="deco deco-compleanno">
+          <rect x="170" y="186" width="140" height="19" rx="2" fill="#D9487E" stroke="#FFF1D6" stroke-width="1.5"/>
+          <circle cx="175" cy="190" r="1.4" fill="#FFF1D6"/><circle cx="305" cy="190" r="1.4" fill="#FFF1D6"/>
+          <text x="240" y="199.4" text-anchor="middle" style="font-family:var(--display),Arial,sans-serif;font-weight:800;font-size:10px;letter-spacing:1px" fill="#FFF1D6">BUON COMPLEANNO</text>
+          <path d="M118 214Q138 226 158 214Q178 226 198 214Q218 226 238 214Q258 226 278 214Q298 226 318 214Q338 226 358 214" fill="none" stroke="#3A2E2A" stroke-width="1.2"/>
+          <polygon points="124.0,219.0 136.0,219.0 130.0,232.0" fill="#F29BB5"/><polygon points="140.0,219.0 152.0,219.0 146.0,232.0" fill="#9FD3F0"/><polygon points="164.0,219.0 176.0,219.0 170.0,232.0" fill="#F6D45A"/><polygon points="180.0,219.0 192.0,219.0 186.0,232.0" fill="#8DD0A0"/><polygon points="204.0,219.0 216.0,219.0 210.0,232.0" fill="#C9A8EA"/><polygon points="220.0,219.0 232.0,219.0 226.0,232.0" fill="#FFB38A"/><polygon points="244.0,219.0 256.0,219.0 250.0,232.0" fill="#F29BB5"/><polygon points="260.0,219.0 272.0,219.0 266.0,232.0" fill="#9FD3F0"/><polygon points="284.0,219.0 296.0,219.0 290.0,232.0" fill="#F6D45A"/><polygon points="300.0,219.0 312.0,219.0 306.0,232.0" fill="#8DD0A0"/><polygon points="324.0,219.0 336.0,219.0 330.0,232.0" fill="#C9A8EA"/><polygon points="340.0,219.0 352.0,219.0 346.0,232.0" fill="#FFB38A"/>
+          <path d="M168 300L188 326M183 290L188 326M196 302L188 326" stroke="#6B5B53" stroke-width="1" fill="none"/>
+          <ellipse cx="168" cy="292" rx="9.5" ry="11.5" fill="#D9487E"/><ellipse cx="164.5" cy="287.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <ellipse cx="183" cy="282" rx="9.5" ry="11.5" fill="#4D8BFF"/><ellipse cx="179.5" cy="277.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <ellipse cx="197" cy="294" rx="9.5" ry="11.5" fill="#F2C94C"/><ellipse cx="193.5" cy="289.5" rx="2.4" ry="3.4" fill="#fff" opacity=".45"/>
+          <rect x="158" y="320" width="22" height="16" rx="1.5" fill="#F29BB5"/>
+          <path d="M169 320V336M158 328H180" stroke="#FFFFFF" stroke-width="2.4"/>
+          <rect x="163" y="310" width="12" height="10" rx="1.5" fill="#F6D45A"/>
+          <path d="M169 310V320" stroke="#F29BB5" stroke-width="2"/>
+          <rect x="181" y="326" width="15" height="10" rx="1.5" fill="#7FB8E8"/>
+          <path d="M188.5 326V336M181 331H196" stroke="#F6D45A" stroke-width="2"/>
+          <rect x="290" y="326" width="40" height="10" rx="1.5" fill="#B98550"/>
+          <ellipse cx="310" cy="326" rx="19" ry="3.6" fill="#FFFFFF" stroke="#E0D6C4" stroke-width=".8"/>
+          <rect x="296" y="312" width="28" height="14" rx="2.5" fill="#F29BB5"/>
+          <path d="M296 316Q300 321 304 316Q308 322 312 316Q316 322 320 316Q322 319 324 316V312H296Z" fill="#FFF1D6"/>
+          <rect x="301" y="303" width="18" height="10" rx="2.5" fill="#FFF1D6"/>
+          <rect x="304" y="294" width="2.4" height="9" fill="#4D8BFF"/>
+          <rect x="309" y="294" width="2.4" height="9" fill="#F2C94C"/>
+          <rect x="314" y="294" width="2.4" height="9" fill="#D9487E"/>
+        </g>
+
+        <!-- PRIMAVERA / ESTATE: fioriere sotto le finestre -->
+        <g class="deco deco-primavera deco-estate">
+          <rect x="144" y="280" width="46" height="8" rx="1.5" fill="#8A5A48"/>
+          <rect x="290" y="280" width="46" height="8" rx="1.5" fill="#8A5A48"/>
+        </g>
+        <g class="deco deco-estate">
+          <path d="M190 334V296M288 334V288" stroke="#4E8A3A" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="190" cy="292" r="8" fill="#F4C230"/><circle cx="190" cy="292" r="3.6" fill="#7A4A1E"/>
+          <circle cx="288" cy="284" r="8.5" fill="#F4C230"/><circle cx="288" cy="284" r="3.8" fill="#7A4A1E"/>
+        </g>
+        </g>
+
+        <!-- Luci: restano accese anche di notte -->
+        <g id="lit">
+          <g id="fireflies" opacity="0"></g>
+          <g id="halos" opacity="0">
+            <ellipse id="haloL" cx="167" cy="258" rx="50" ry="46" fill="url(#halo)"/>
+            <ellipse id="haloR" cx="313" cy="258" rx="50" ry="46" fill="url(#halo)"/>
+            <ellipse cx="240" cy="300" rx="64" ry="74" fill="url(#halo)"/>
+          </g>
+
+          <rect id="winL" x="146" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M167 238V278M146 258H188" stroke="#5A463C" stroke-width="2.5"/>
+          <!-- il gatto: se ne sta alla finestra di sinistra (di notte dorme) -->
+          <g id="cat" class="cat" transform="translate(157 276.5)">
+            <g class="cat-anim">
+              <path class="cat-tail" d="M7 -3Q16 -4 13 -14Q12 -17 9 -15" fill="none" stroke="#E39B4F" stroke-width="3.2" stroke-linecap="round"/>
+              <ellipse cx="0" cy="-8" rx="7.5" ry="8.5" fill="#E39B4F"/>
+              <ellipse cx="0" cy="-5" rx="3.6" ry="5" fill="#FFF1D6"/>
+              <polygon points="-5.8,-22 -5.4,-29.5 -1.2,-24.6" fill="#E39B4F"/>
+              <polygon points="5.8,-22 5.4,-29.5 1.2,-24.6" fill="#E39B4F"/>
+              <polygon points="-4.7,-23.2 -4.5,-27.6 -2.3,-24.8" fill="#F4B8A8"/>
+              <polygon points="4.7,-23.2 4.5,-27.6 2.3,-24.8" fill="#F4B8A8"/>
+              <circle cx="0" cy="-19" r="6.4" fill="#E39B4F"/>
+              <path d="M-1.8 -24.8V-22.3M0 -25.2V-22.6M1.8 -24.8V-22.3" stroke="#C9773A" stroke-width="1" stroke-linecap="round"/>
+              <g class="cat-eyes"><ellipse cx="-2.5" cy="-19.6" rx="1.1" ry="1.55" fill="#3A2E2A"/><ellipse cx="2.5" cy="-19.6" rx="1.1" ry="1.55" fill="#3A2E2A"/></g>
+              <path class="cat-sleep" d="M-3.7 -19.4Q-2.5 -18.1 -1.3 -19.4M1.3 -19.4Q2.5 -18.1 3.7 -19.4" fill="none" stroke="#3A2E2A" stroke-width=".9" stroke-linecap="round"/>
+              <polygon points="-1,-17.4 1,-17.4 0,-16.3" fill="#E5879A"/>
+              <path d="M-1.7 -16.1Q0 -15 1.7 -16.1" fill="none" stroke="#3A2E2A" stroke-width=".6"/>
+              <path d="M-3.4 -17L-7.6 -17.9M-3.4 -16.3L-7.6 -16M3.4 -17L7.6 -17.9M3.4 -16.3L7.6 -16" stroke="#FFF1D6" stroke-width=".5" stroke-linecap="round"/>
+              <ellipse cx="-3" cy="-1" rx="2.7" ry="1.6" fill="#FFF1D6"/><ellipse cx="3" cy="-1" rx="2.7" ry="1.6" fill="#FFF1D6"/>
+            </g>
+            <g class="zzz" fill="#FFFFFF" style="font-family:var(--display),Arial,sans-serif;font-weight:800">
+              <text x="7" y="-24" font-size="6.5">z</text><text x="11.5" y="-30" font-size="5">z</text>
+            </g>
+          </g>
+          <rect id="winR" x="292" y="238" width="42" height="40" rx="2" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M313 238V278M292 258H334" stroke="#5A463C" stroke-width="2.5"/>
+          <!-- vetri appannati quando fa freddo (con un cuoricino sul vetro di destra) e brina sotto zero -->
+          <g id="windowFog" opacity="0">
+            <rect id="fogL" x="147.5" y="239.5" width="39" height="37" fill="#C5D6E2" opacity=".72"/>
+            <rect id="fogR" x="293.5" y="239.5" width="39" height="37" fill="#C5D6E2" opacity=".72"/>
+            <path id="heartR" d="M313 268C305 262 301 257 301 253C301 249 304 247 307 247C309.5 247 311.5 248.5 313 251C314.5 248.5 316.5 247 319 247C322 247 325 249 325 253C325 257 321 262 313 268Z" fill="none" stroke="var(--light)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+          </g>
+          <path id="frost" d="M148.5 240.5L159.5 243.5M148.5 240.5L157.5 249.5M148.5 240.5L151.5 251.5M154.5 242.1l2.2 -2.4M153.0 245.0l3.0 -1.0M150.1 246.5l-2.4 2.2M185.5 275.5L174.5 272.5M185.5 275.5L176.5 266.5M185.5 275.5L182.5 264.5M179.5 273.9l-2.2 2.4M181.0 271.0l-3.0 1.0M183.9 269.5l2.4 -2.2M294.5 240.5L305.5 243.5M294.5 240.5L303.5 249.5M294.5 240.5L297.5 251.5M300.5 242.1l2.2 -2.4M299.0 245.0l3.0 -1.0M296.1 246.5l-2.4 2.2M331.5 275.5L320.5 272.5M331.5 275.5L322.5 266.5M331.5 275.5L328.5 264.5M325.5 273.9l-2.2 2.4M327.0 271.0l-3.0 1.0M329.9 269.5l2.4 -2.2" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity="0"/>
+
+          <circle cx="240" cy="170" r="11" fill="var(--light)" stroke="#5A463C" stroke-width="3"/>
+          <path d="M240 159V181M229 170H251" stroke="#5A463C" stroke-width="2"/>
+
+          <!-- fiori delle fioriere: sopra le finestre, ma si scuriscono di notte -->
+          <g filter="url(#nightF)">
+            <g class="deco deco-primavera flowers">
+              <g fill="#F29BB5"><circle cx="152" cy="277" r="3.6"/><circle cx="172" cy="277" r="3.6"/><circle cx="298" cy="277" r="3.6"/><circle cx="318" cy="277" r="3.6"/></g>
+              <g fill="#fff" stroke="#E5D9C8" stroke-width=".6"><circle cx="162" cy="276" r="3.6"/><circle cx="182" cy="276" r="3.6"/><circle cx="308" cy="276" r="3.6"/><circle cx="328" cy="276" r="3.6"/></g>
+            </g>
+            <g class="deco deco-estate flowers">
+              <g fill="#D9453D"><circle cx="152" cy="277" r="3.8"/><circle cx="172" cy="277" r="3.8"/><circle cx="182" cy="276" r="3.8"/><circle cx="298" cy="277" r="3.8"/><circle cx="318" cy="277" r="3.8"/></g>
+              <g fill="#F08AA5"><circle cx="162" cy="276" r="3.8"/><circle cx="308" cy="276" r="3.8"/><circle cx="328" cy="276" r="3.8"/></g>
+            </g>
+            <g class="deco deco-liberazione deco-lavoratori">
+              <g fill="#D1262F"><circle cx="152" cy="277" r="4.2"/><circle cx="162" cy="276" r="4.2"/><circle cx="172" cy="277" r="4.2"/><circle cx="182" cy="276" r="4.2"/><circle cx="298" cy="277" r="4.2"/><circle cx="308" cy="276" r="4.2"/><circle cx="318" cy="277" r="4.2"/><circle cx="328" cy="276" r="4.2"/></g>
+              <g fill="#EE6A70"><circle cx="151" cy="275.5" r="1.7"/><circle cx="161" cy="274.5" r="1.7"/><circle cx="171" cy="275.5" r="1.7"/><circle cx="181" cy="274.5" r="1.7"/><circle cx="297" cy="275.5" r="1.7"/><circle cx="307" cy="274.5" r="1.7"/><circle cx="317" cy="275.5" r="1.7"/><circle cx="327" cy="274.5" r="1.7"/></g>
+            </g>
+          </g>
+
+          <!-- NATALE: lucine sul tetto, stella e luci dell'alberello -->
+          <g class="deco deco-natale">
+            <path d="M118 214Q138 226 158 214Q178 226 198 214Q218 226 238 214Q258 226 278 214Q298 226 318 214Q338 226 358 214" fill="none" stroke="#3A2E2A" stroke-width="1.2"/>
+            <circle class="bulb" style="animation-delay:-0.0s" cx="128.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.4s" cx="138.0" cy="220.0" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.7s" cx="148.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-1.1s" cx="168.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.5s" cx="178.0" cy="220.0" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.2s" cx="188.0" cy="218.5" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.6s" cx="208.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-1.0s" cx="218.0" cy="220.0" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.4s" cx="228.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.1s" cx="248.0" cy="218.5" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.5s" cx="258.0" cy="220.0" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-0.9s" cx="268.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.2s" cx="288.0" cy="218.5" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-0.0s" cx="298.0" cy="220.0" r="2.4" fill="#FFD34D"/><circle class="bulb" style="animation-delay:-0.4s" cx="308.0" cy="218.5" r="2.4" fill="#46B36B"/><circle class="bulb" style="animation-delay:-0.7s" cx="328.0" cy="218.5" r="2.4" fill="#4D8BFF"/><circle class="bulb" style="animation-delay:-1.1s" cx="338.0" cy="220.0" r="2.4" fill="#E5483C"/><circle class="bulb" style="animation-delay:-1.5s" cx="348.0" cy="218.5" r="2.4" fill="#FFD34D"/>
+            <polygon points="384,291 385.5,295 389.7,295.1 386.4,297.8 387.5,301.9 384,299.5 380.5,301.9 381.6,297.8 378.3,295.1 382.5,295" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-.3s" cx="379" cy="314" r="1.8" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-.9s" cx="390" cy="319" r="1.8" fill="#E5483C"/>
+            <circle class="bulb" style="animation-delay:-1.3s" cx="372" cy="330" r="1.8" fill="#4D8BFF"/>
+            <circle class="bulb" style="animation-delay:-.6s" cx="396" cy="333" r="1.8" fill="#FFD34D"/>
+            <circle class="bulb" style="animation-delay:-1.1s" cx="366" cy="345" r="1.8" fill="#E5483C"/>
+            <circle class="bulb" style="animation-delay:-.2s" cx="402" cy="346" r="1.8" fill="#46B36B"/>
+          </g>
+
+          <!-- COMPLEANNO: fiammelle delle candeline -->
+          <g class="deco deco-compleanno">
+            <circle cx="310" cy="291" r="17" fill="url(#halo)" opacity=".4"/>
+            <ellipse class="flame" cx="305.2" cy="290.6" rx="2.1" ry="3.5" fill="#FFC93C"/>
+            <ellipse class="flame" style="animation-delay:-.2s" cx="310.2" cy="290.6" rx="2.1" ry="3.5" fill="#FFC93C"/>
+            <ellipse class="flame" style="animation-delay:-.35s" cx="315.2" cy="290.6" rx="2.1" ry="3.5" fill="#FFC93C"/>
+          </g>
+
+          <!-- porta: la luce dietro, poi l'anta che si apre -->
+          <rect x="205" y="222" width="70" height="112" rx="2" fill="#3A2E2A"/>
+          <rect x="211" y="228" width="58" height="106" fill="url(#glow)"/>
+          <g class="door-leaf" id="leaf">
+            <g filter="url(#nightF)">
+              <rect x="211" y="228" width="58" height="106" fill="var(--door)"/>
+              <rect x="217" y="234" width="20" height="38" rx="2" fill="var(--door-deep)"/>
+              <rect x="243" y="234" width="20" height="38" rx="2" fill="var(--door-deep)"/>
+              <rect x="217" y="278" width="20" height="48" rx="2" fill="var(--door-deep)"/>
+              <rect x="243" y="278" width="20" height="48" rx="2" fill="var(--door-deep)"/>
+              <circle cx="262" cy="284" r="3.2" fill="var(--brass)"/>
+              <g class="deco deco-natale">
+                <circle cx="240" cy="252" r="9" fill="none" stroke="#2E6B3A" stroke-width="5"/>
+                <circle cx="234" cy="247" r="1.6" fill="#E5483C"/><circle cx="247" cy="256" r="1.6" fill="#E5483C"/><circle cx="236" cy="258" r="1.6" fill="#E5483C"/>
+                <polygon points="240,261 234,268 240,265 246,268" fill="#E5483C"/>
+              </g>
+              <g class="deco deco-carnevale">
+                <path d="M225 250Q240 241 255 250Q258 261 249 263Q245 257 240 261Q235 257 231 263Q222 261 225 250Z" fill="#FBF6EA" stroke="#C79A2B" stroke-width="1.6"/>
+                <ellipse cx="233" cy="252" rx="3" ry="2" fill="#3A2E2A"/><ellipse cx="247" cy="252" rx="3" ry="2" fill="#3A2E2A"/>
+                <path d="M253 246Q262 240 264 230" fill="none" stroke="#B05FD6" stroke-width="3" stroke-linecap="round"/>
+                <path d="M255 247Q262 246 266 238" fill="none" stroke="#E5483C" stroke-width="2" stroke-linecap="round"/>
+              </g>
+              <g class="deco deco-pasqua">
+                <circle cx="240" cy="252" r="9" fill="none" stroke="#8DBF7A" stroke-width="5"/>
+                <circle cx="233" cy="247" r="2.2" fill="#F29BB5"/><circle cx="247" cy="247" r="2.2" fill="#F6D45A"/>
+                <circle cx="249" cy="257" r="2.2" fill="#C9A8EA"/><circle cx="231" cy="257" r="2.2" fill="#fff"/>
+                <ellipse cx="240" cy="262" rx="3.2" ry="4.2" fill="#9FD3F0"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- luce che esce dalla porta sul vialetto -->
+          <polygon class="spill" id="spill" points="211,340 269,340 322,400 158,400" fill="url(#spillGrad)"/>
+          <polygon id="spillNight" points="211,340 269,340 322,400 158,400" fill="url(#spillGrad)" opacity="0"/>
+
+          <!-- HALLOWEEN: la zucca intagliata si accende -->
+          <g class="deco deco-halloween">
+            <polygon points="297,321 302,321 299.5,316" fill="#FFE08A"/>
+            <polygon points="307,321 312,321 309.5,316" fill="#FFE08A"/>
+            <path d="M296 328Q304 335 312 328L309 327L306.5 330L304 327L301.5 330L299 327Z" fill="#FFE08A"/>
+          </g>
+
+          <!-- Halloween: fantasmino alla finestra -->
+          <g class="deco deco-halloween">
+            <path d="M303 274V254C303 245 308 241 313 241C318 241 323 245 323 254V274L319.5 270.5L316.5 274L313 270.5L309.5 274L306.5 270.5Z" fill="#fff" stroke="#C9C2B4" stroke-width=".8"/>
+            <circle cx="309" cy="256" r="1.7" fill="#2B2433"/><circle cx="317" cy="256" r="1.7" fill="#2B2433"/>
+            <ellipse cx="313" cy="263" rx="2" ry="2.6" fill="#2B2433"/>
+          </g>
+        </g>
+
+        <!-- Uccellini e stelle cadenti che attraversano il cielo (riempito da JavaScript) -->
+        <g id="flyers" pointer-events="none"></g>
+
+        <!-- Meteo reale: nebbia, lampi, pioggia, neve (riempito da JavaScript) -->
+        <g id="wx" pointer-events="none">
+          <rect id="fog" width="480" height="400" fill="url(#fogGrad)" opacity="0"/>
+          <g id="bolt" opacity="0"><polygon points="300,30 280,110 298,108 268,196 324,98 304,100 326,30" fill="#FFF7C2"/></g>
+          <g id="rain"></g>
+          <g id="snowfall"></g>
+          <rect id="flash" width="480" height="400" fill="#fff" opacity="0"/>
+        </g>
+
+        <!-- Zone da toccare: finestre (luce) e camino (fumo) -->
+        <g id="hits">
+          <g class="hit" id="hitSky" role="button" tabindex="0" aria-label="Il cielo: tocca per vedere cosa passa">
+            <title>Cosa passa di qui?</title><rect x="0" y="0" width="480" height="292"/>
+          </g>
+          <g class="hit" id="hitL" role="button" tabindex="0" aria-pressed="true" aria-label="Luce della finestra di sinistra, accendi o spegni">
+            <title>Accendi o spegni la luce</title><rect x="141" y="233" width="52" height="54"/>
+          </g>
+          <g class="hit" id="hitR" role="button" tabindex="0" aria-pressed="true" aria-label="Luce della finestra di destra, accendi o spegni">
+            <title>Accendi o spegni la luce</title><rect x="287" y="233" width="52" height="54"/>
+          </g>
+          <g class="hit" id="hitC" role="button" tabindex="0" aria-label="Camino, fai uscire più fumo">
+            <title>Un po' di fumo</title><rect x="286" y="66" width="40" height="106"/>
+          </g>
+          <g class="hit" id="hitCat" role="button" tabindex="0" aria-label="Il gatto alla finestra: fagli una carezza">
+            <title>Il gatto</title><rect x="148" y="247" width="24" height="31"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <button class="sound" id="soundBtn" type="button" aria-pressed="false" aria-label="Attiva i suoni d'ambiente" title="Suoni d'ambiente: spenti">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/>
+        <g class="waves" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a8.5 8.5 0 0 1 0 12"/></g>
+        <path class="slash" d="M17 9l5 6M22 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    </div>
+  </div>
+
+  <section>
+    <p class="who" id="who"></p>
+    <p class="birthday" id="birthday" hidden></p>
+
+    <h1 class="days" aria-live="off">
+      <span class="days-num" id="days">--</span>
+      <span class="days-label" id="daysLabel">giorni</span>
+    </h1>
+
+    <p class="clock" id="clock" aria-hidden="true">
+      <b id="h">--</b><span>ore</span><b id="m">--</b><span>min</span><b id="s">--</b><span>sec</span>
+    </p>
+
+    <p class="sr-only" id="srText" aria-live="polite"></p>
+
+    <p class="when" id="when"></p>
+
+    <p class="weather" id="weather" hidden></p>
+
+    <p class="note" id="note"></p>
+  </section>
+
+</main>
+
+<section class="steps" id="stepsSection">
+  <h2>Le tappe</h2>
+  <ol id="steps"></ol>
+</section>
+</div>
+
+<script>
+/* =========================================================
+   MODIFICA SOLO QUESTA PARTE
+   ========================================================= */
+const CONFIG = {
+  // Il giorno (e l'ora) in cui avete le chiavi. Formato: AAAA-MM-GGTHH:MM:SS
+  target: "2027-05-13T18:00:00",
+
+  // Il giorno in cui avete deciso: serve a far aprire la porta piano piano.
+  start: "2026-10-16T00:00:00",
+
+  // Nomi o soprannomi, come preferite.
+  names: "Popo & Popa",
+
+  // Il luogo per alba e tramonto. Per ora Roma; quando sapete la città della casa,
+  // cambiate le coordinate (latitudine, longitudine). Il fuso orario resta Europe/Rome.
+  place: { name: "Roma", lat: 41.9028, lon: 12.4964, tz: "Europe/Rome" },
+
+  // Meteo reale: la pagina legge le condizioni attuali da Open-Meteo (gratuito, senza chiave)
+  // e le mostra nella scena. Metti false per spegnerlo.
+  // Anteprima senza aspettare il tempo giusto: ?meteo=pioggia (anche pioggerella, temporale,
+  // neve, nebbia, nuvoloso, sereno) all'indirizzo.
+  weather: true,
+
+  // Suoni d'ambiente (pioggia, vento, camino, grilli, uccelli, tuoni), generati dal telefono:
+  // non c'è nessun file audio. Partono solo se qualcuno tocca il pulsante in alto a destra.
+  // soundVolume va da 0 a 1. Metti sound: false per togliere il pulsante.
+  sound: true,
+  soundVolume: 0.5,
+
+  // Quando comincia ogni stagione, nel formato "mese-giorno".
+  // Ora sono le stagioni "meteorologiche" (l'inverno parte il 1 dicembre).
+  // Per quelle astronomiche: primavera "03-20", estate "06-21", autunno "09-23", inverno "12-21".
+  seasonStart: { primavera: "03-01", estate: "06-01", autunno: "09-01", inverno: "12-01" },
+
+  // Le feste hanno decorazioni tutte loro, indipendenti dalla stagione.
+  // "da" e "a" sono nel formato "mese-giorno"; se "a" viene prima di "da" il periodo
+  // attraversa il capodanno (come il Natale, che arriva fino all'Epifania).
+  // I compleanni, nel formato "mese-giorno". Nel giorno del compleanno la pagina fa una festa
+  // tutta per lui o per lei (e per quel giorno nasconde le altre decorazioni).
+  // Lascia date: "" finché non la sai. Anteprima: ?data=2027-02-05 oppure ?compleanno=Popo.
+  birthdays: [
+    { name: "Popo", date: "02-05" },
+    { name: "Popa", date: "05-13" }
+  ],
+
+  // Carnevale e Pasqua cambiano data ogni anno: si scrivono rispetto alla Pasqua ("pasqua-47" =
+  // 47 giorni prima della Pasqua, cioè il Martedì Grasso; "pasqua+1" = Pasquetta).
+  holidays: {
+    halloween: { from: "10-01",    to: "11-02",    emoji: "🎃" },
+    natale:    { from: "12-08",    to: "01-06",    emoji: "🎄" },
+    carnevale: { from: "pasqua-54", to: "pasqua-47", emoji: "🎭" },   // una settimana fino al Martedì Grasso
+    pasqua:    { from: "pasqua-7",  to: "pasqua+1",  emoji: "🐣" },   // dalla Domenica delle Palme a Pasquetta
+    liberazione: { from: "04-23",   to: "04-25",    emoji: "🕊️" },   // 25 aprile, Festa della Liberazione
+    lavoratori:  { from: "04-29",   to: "05-01",    emoji: "🛠️" }    // 1 maggio, Festa dei lavoratori
+  },
+
+  // La frase in fondo. Lasciala vuota ("") finché non l'avete scelta: in quel caso non viene mostrata.
+  message: "",
+
+  // Le tappe, in ordine. La data è facoltativa: quando la sapete, scrivetela
+  // nel formato "2027-03-20" (oppure "2027-03-20T15:00:00" se volete anche l'ora).
+  // Una tappa con data passata risulta fatta da sola; per segnarne una a mano
+  // senza data, aggiungete done: true.
+  // Se la data è approssimativa, aggiungete label: "inizio novembre": la pagina
+  // mostra quella scritta invece della data. In quel caso scegliete come date
+  // la fine del periodo, così la tappa risulta fatta solo quando è davvero passata.
+  steps: [
+    { title: "Sopralluogo Luigi e Zio Daniele", date: "2026-11-10", label: "inizio novembre" },
+    { title: "Sopralluogo Popi e prime pulizie", date: "2026-12-20", label: "metà dicembre" },
+    { title: "Acquisto del letto", date: "2027-03-31", label: "fine marzo" },
+    { title: "Ultime pulizie", date: "2027-05-01" },
+    { title: "Prima notte", date: "target" }   // "target" = la data del countdown
+  ],
+
+  // Cosa mostrare quando il momento è arrivato.
+  arrivedTitle: "Siamo a casa.",
+  arrivedMessage: "Il countdown è finito. Adesso comincia tutto il resto.",
+
+  // Se il giorno dell'arrivo è anche un compleanno ({nome} diventa il nome di chi festeggia).
+  arrivedBirthdayMessage: "Buon compleanno, {nome}. E benvenuti a casa."
+};
+/* ========================================================= */
+
+const $ = id => document.getElementById(id);
+const target = new Date(CONFIG.target);
+const start = new Date(CONFIG.start);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let BDAY = [];   // chi fa il compleanno oggi (impostato da initSeason)
+
+const pad = n => String(n).padStart(2, "0");
+const plural = (n, one, many) => (n === 1 ? one : many);
+
+function countWeekends(from, to) {
+  // Conta i sabati tra due date.
+  let count = 0;
+  const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  while (d < to) {
+    if (d.getDay() === 6 && d >= new Date(from.getFullYear(), from.getMonth(), from.getDate())) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function setDoor(progress) {
+  const p = Math.min(1, Math.max(0, progress));
+  const open = 0.07 + 0.93 * p;             // parte già un po' socchiusa
+  const scale = 1 - 0.82 * open;            // l'anta si "chiude" verso il cardine = si apre
+  $("leaf").style.transform = "scaleX(" + scale.toFixed(3) + ")";
+  $("spill").style.opacity = (0.15 + 0.85 * p).toFixed(2);
+}
+
+function renderSteps() {
+  const list = $("steps");
+  const steps = CONFIG.steps || [];
+  $("stepsSection").hidden = steps.length === 0;
+  if (!steps.length) return;
+
+  const now = new Date();
+  const allDone = now >= target;
+  const fmt = new Intl.DateTimeFormat("it-IT", { weekday: "long", day: "numeric", month: "long" });
+
+  const items = steps.map(step => {
+    const when = step.date ? (step.date === "target" ? target : new Date(step.date)) : null;
+    return { step, when, done: allDone || step.done === true || !!(when && when <= now) };
+  });
+
+  let nextFound = false;
+  list.innerHTML = "";
+  list.style.setProperty("--n", steps.length);
+
+  items.forEach(({ step, when, done }, i) => {
+    const li = document.createElement("li");
+    li.className = "step";
+
+    // Quanto è piena la linea che porta alla tappa successiva (0–1).
+    let fill = 0;
+    const nxt = items[i + 1];
+    if (done && nxt) {
+      if (nxt.done) fill = 1;
+      else if (when && nxt.when) fill = Math.min(1, Math.max(0, (now - when) / (nxt.when - when)));
+    }
+    li.style.setProperty("--f", fill.toFixed(3));
+
+    const title = document.createElement("span");
+    title.className = "step-title";
+    title.textContent = step.title;
+    li.appendChild(title);
+
+    if (done) {
+      li.classList.add("done");
+    } else if (!nextFound) {
+      nextFound = true;
+      li.classList.add("next");
+      const tag = document.createElement("span");
+      tag.className = "step-tag";
+      tag.textContent = "prossima";
+      title.appendChild(tag);
+    }
+
+    const sub = document.createElement("span");
+    sub.className = "step-date";
+    if (step.label) {
+      sub.textContent = step.label;
+    } else if (when) {
+      const days = Math.ceil((when - now) / 86400000);
+      sub.textContent = fmt.format(when) + (!done && days > 0 ? " · tra " + days + " " + plural(days, "giorno", "giorni") : "");
+    } else {
+      sub.textContent = "data da definire";
+    }
+    li.appendChild(sub);
+
+    list.appendChild(li);
+  });
+}
+
+function render() {
+  const now = new Date();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    document.body.classList.add("arrived");
+    const since = Math.floor((now - target) / 86400000);
+    $("days").textContent = since;
+    $("daysLabel").textContent = plural(since, "giorno a casa", "giorni a casa");
+    $("clock").style.display = "none";
+    $("when").innerHTML = "<strong>" + CONFIG.arrivedTitle + "</strong>";
+    const msg = (BDAY.length && CONFIG.arrivedBirthdayMessage)
+      ? CONFIG.arrivedBirthdayMessage.replace("{nome}", BDAY.join(" e "))
+      : CONFIG.arrivedMessage;
+    $("note").textContent = msg;
+    $("note").hidden = !msg;
+    $("srText").textContent = CONFIG.arrivedTitle;
+    document.title = "Siamo a casa 🔑";
+    setDoor(1);
+    return false;
+  }
+
+  const totalSec = Math.floor(diff / 1000);
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+
+  $("days").textContent = d;
+  $("daysLabel").textContent = plural(d, "giorno", "giorni");
+  $("h").textContent = pad(h);
+  $("m").textContent = pad(m);
+  $("s").textContent = pad(s);
+
+  document.title = d + " " + plural(d, "giorno", "giorni") + " a casa nostra";
+
+  if (s === 0 || !$("srText").textContent) {
+    $("srText").textContent = "Mancano " + d + " " + plural(d, "giorno", "giorni") +
+      ", " + h + " ore e " + m + " minuti.";
+  }
+  return true;
+}
+
+/* ---------- Stagioni ---------- */
+const SEASONS = {
+  autunno:   { label: "autunno",   emoji: "🍂", kind: "leaf",  count: 14, colors: ["#C8553D", "#D98E2B", "#A8452E", "#B98A2E", "#8C6A2A"] },
+  inverno:   { label: "inverno",   emoji: "❄️", kind: "snow",  count: 22, colors: ["#FFFFFF"] },
+  primavera: { label: "primavera", emoji: "🌷", kind: "petal", count: 14, colors: ["#F4B6C8", "#F9D3DC", "#E8C9F0", "#FFFFFF"] },
+  estate:    { label: "estate",    emoji: "☀️", kind: "glow",  count: 12, colors: ["#F4C95D", "#F9DE8C"] }
+};
+
+// "mese-giorno" -> numero confrontabile (es. "12-08" -> 1208)
+const mdKey = s => { const p = s.split("-").map(Number); return p[0] * 100 + p[1]; };
+
+// Data di oggi a Roma. Anteprima: ?data=2026-12-20 all'indirizzo.
+function romeToday() {
+  const real = zoned(new Date(), CONFIG.place.tz);
+  const dp = new URLSearchParams(location.search).get("data");
+  if (dp && /^\d{4}-\d{2}-\d{2}$/.test(dp)) {
+    const a = dp.split("-").map(Number);
+    return { y: a[0], m: a[1], d: a[2], min: real.min };
+  }
+  return real;
+}
+
+// La stagione è quella con l'inizio più recente (CONFIG.seasonStart).
+function seasonFor(t) {
+  const cur = t.m * 100 + t.d;
+  const list = Object.keys(CONFIG.seasonStart)
+    .map(k => [k, mdKey(CONFIG.seasonStart[k])])
+    .sort((a, b) => a[1] - b[1]);
+  let pick = list[list.length - 1][0];          // prima del primo inizio dell'anno: è ancora l'ultima stagione
+  list.forEach(e => { if (e[1] <= cur) pick = e[0]; });
+  return pick;
+}
+
+// Data della Pasqua (calendario gregoriano) per l'anno dato.
+function easterDate(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  return { m: Math.floor((h + l - 7 * m + 114) / 31), d: ((h + l - 7 * m + 114) % 31) + 1 };
+}
+
+// "10-01" oppure "pasqua-47" / "pasqua+1" -> numero mese*100+giorno per quell'anno.
+function holidayKey(spec, y) {
+  const m = /^pasqua([+-]\d+)?$/.exec(spec);
+  if (!m) return mdKey(spec);
+  const e = easterDate(y);
+  const dt = new Date(Date.UTC(y, e.m - 1, e.d + (m[1] ? parseInt(m[1], 10) : 0)));
+  return (dt.getUTCMonth() + 1) * 100 + dt.getUTCDate();
+}
+
+// Chi fa il compleanno oggi (CONFIG.birthdays). Anteprima: ?compleanno=Popo
+function birthdaysToday(t) {
+  const cur = t.m * 100 + t.d;
+  const forced = new URLSearchParams(location.search).get("compleanno");
+  return (CONFIG.birthdays || []).filter(b =>
+    forced ? forced.toLowerCase() === b.name.toLowerCase() : (b.date && mdKey(b.date) === cur)
+  ).map(b => b.name);
+}
+
+// Le feste attive oggi (CONFIG.holidays). Anteprima: ?festa=natale (o ?festa=nessuna).
+function activeHolidays(t) {
+  const cur = t.m * 100 + t.d;
+  const forced = new URLSearchParams(location.search).get("festa");
+  return Object.keys(CONFIG.holidays).filter(k => {
+    if (forced) return forced === k;
+    const h = CONFIG.holidays[k], from = holidayKey(h.from, t.y), to = holidayKey(h.to, t.y);
+    return from <= to ? (cur >= from && cur <= to) : (cur >= from || cur <= to);
+  });
+}
+
+function shape(kind, c) {
+  switch (kind) {
+    case "leaf":
+      return '<svg viewBox="0 0 24 24"><path d="M12 2C19 7 19 15 12 22C5 15 5 7 12 2Z" fill="' + c + '"/>' +
+             '<path d="M12 22V8" stroke="rgba(0,0,0,.25)" stroke-width="1" fill="none"/></svg>';
+    case "snow":
+      return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff" stroke="#B9CADB" stroke-width="1.5"/></svg>';
+    case "petal":
+      return '<svg viewBox="0 0 24 24"><path d="M12 2C21 6 21 17 12 22C3 17 3 6 12 2Z" fill="' + c + '"/></svg>';
+    default:
+      return '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="' + c + '"/></svg>';
+  }
+}
+
+/* ---------- Scena: alberi e prato ---------- */
+// Generatore casuale con seme: gli alberi hanno sempre la stessa forma,
+// cambiano solo le foglie da una stagione all'altra.
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const TREE = {
+  autunno:   { tip: 0.95, per: 4, mid: 0.7, midPer: 2, rmin: 3,   rmax: 6.5, colors: ["#E8B93C", "#D98E2B", "#C8553D", "#F1D06B", "#B98A2E"] },
+  inverno:   { tip: 0.45, per: 1, mid: 0,   midPer: 0, rmin: 1.6, rmax: 3,   colors: ["#FFFFFF"], stroke: "#C3D2E1" },
+  primavera: { tip: 1,    per: 4, mid: 0.6, midPer: 2, rmin: 2.5, rmax: 5,   colors: ["#F4B6C8", "#F9D3DC", "#FFFFFF", "#9CC27A"] },
+  estate:    { tip: 1,    per: 6, mid: 0.9, midPer: 4, rmin: 5,   rmax: 9,   colors: ["#4E9440", "#5FA84C", "#3F8236", "#6DB35A"] }
+};
+
+function drawTree(x, y, h, seed, key) {
+  const r = mulberry32(seed);
+  const T = TREE[key];
+  let wood = "", foliage = "";
+
+  const leaf = (px, py) => {
+    const rad = T.rmin + r() * (T.rmax - T.rmin);
+    const c = T.colors[Math.floor(r() * T.colors.length)];
+    foliage += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + rad.toFixed(1) +
+      '" fill="' + c + '"' + (T.stroke ? ' stroke="' + T.stroke + '" stroke-width=".8"' : "") + "/>";
+  };
+
+  function branch(x1, y1, ang, len, w, depth) {
+    const x2 = x1 + Math.sin(ang) * len;
+    const y2 = y1 - Math.cos(ang) * len;
+    wood += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
+      '" y2="' + y2.toFixed(1) + '" stroke-width="' + w.toFixed(1) + '"/>';
+
+    if (depth > 1 && r() < T.mid) {
+      for (let k = 0; k < T.midPer; k++) {
+        leaf(x1 + (x2 - x1) * r() + (r() - 0.5) * 8, y1 + (y2 - y1) * r() + (r() - 0.5) * 8);
+      }
+    }
+    if (depth === 0) {
+      if (r() < T.tip) {
+        for (let k = 0; k < T.per; k++) leaf(x2 + (r() - 0.5) * 14, y2 + (r() - 0.5) * 14);
+      }
+      return;
+    }
+    const n = depth >= 3 ? 2 : (r() < 0.35 ? 3 : 2);
+    for (let i = 0; i < n; i++) {
+      const spread = (i - (n - 1) / 2) * 0.62 + (r() - 0.5) * 0.3;
+      branch(x2, y2, ang + spread, len * (0.7 + r() * 0.1), Math.max(w * 0.68, 0.9), depth - 1);
+    }
+  }
+
+  branch(x, y, (r() - 0.5) * 0.12, h * 0.34, h * 0.048, 4);
+  // Il gruppo "tree" oscilla col vento, ruotando attorno alla base del tronco.
+  return '<g class="tree" style="transform-origin:' + x + "px " + y + "px;animation-delay:-" + (seed % 5) +
+    's"><g stroke="var(--bark)" stroke-linecap="round" fill="none">' + wood + "</g>" + foliage + "</g>";
+}
+
+function groundDetails(key) {
+  const r = mulberry32(99);
+  let out = "";
+  if (key === "autunno") {
+    const cols = ["#C8553D", "#D98E2B", "#E8B93C", "#A8452E", "#B98A2E"];
+    for (let i = 0; i < 22; i++) {
+      const cx = 14 + r() * 452, cy = 346 + r() * 48;
+      out += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="' + (3 + r() * 2.5).toFixed(1) +
+        '" ry="' + (1.5 + r()).toFixed(1) + '" fill="' + cols[i % cols.length] +
+        '" transform="rotate(' + Math.floor(r() * 180) + " " + cx.toFixed(1) + " " + cy.toFixed(1) + ')"/>';
+    }
+  } else if (key === "primavera" || key === "estate") {
+    const cols = key === "primavera" ? ["#F29BB5", "#FFFFFF", "#F6D45A", "#C9A8EA"] : ["#FFFFFF", "#F6D45A", "#F29BB5"];
+    const n = key === "primavera" ? 30 : 16;
+    for (let i = 0; i < n; i++) {
+      out += '<circle cx="' + (12 + r() * 456).toFixed(1) + '" cy="' + (344 + r() * 50).toFixed(1) +
+        '" r="' + (1.8 + r() * 1.2).toFixed(1) + '" fill="' + cols[i % cols.length] + '"/>';
+    }
+  }
+  return out;
+}
+
+function initScene(key) {
+  $("trees").innerHTML = drawTree(60, 344, 195, 11, key) + drawTree(420, 342, 175, 23, key);
+  $("groundDetails").innerHTML = groundDetails(key);
+  $("stars").innerHTML = starsHtml();
+}
+
+// Coriandoli che cadono durante il Carnevale (si sommano ai fiocchi, alle foglie...).
+function addConfetti() {
+  const cols = ["#E5483C", "#F2C94C", "#46B36B", "#4D8BFF", "#B05FD6", "#F08AA5"];
+  const n = window.innerWidth < 720 ? 10 : 18;
+  const sky = $("sky");
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("span");
+    p.className = "fall";
+    const size = 9 + Math.random() * 7, dur = 9 + Math.random() * 8;
+    p.style.setProperty("--x", (Math.random() * 100).toFixed(1) + "%");
+    p.style.setProperty("--y", (Math.random() * 95).toFixed(1) + "vh");
+    p.style.setProperty("--s", size.toFixed(0) + "px");
+    p.style.setProperty("--d", dur.toFixed(1) + "s");
+    p.style.setProperty("--dl", (-Math.random() * dur).toFixed(1) + "s");
+    p.style.setProperty("--sw", (2 + Math.random() * 2).toFixed(1) + "s");
+    p.style.setProperty("--o", "0.9");
+    p.innerHTML = '<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="6" rx="1.5" fill="' + cols[i % cols.length] + '"/></svg>';
+    sky.appendChild(p);
+  }
+}
+
+function initSeason() {
+  // Per vedere in anteprima una stagione: aggiungi ?stagione=inverno all'indirizzo.
+  const param = new URLSearchParams(location.search).get("stagione");
+  const today = romeToday();
+  const key = SEASONS[param] ? param : seasonFor(today);
+  const s = SEASONS[key];
+
+  document.body.dataset.season = key;
+
+  // Le feste (Halloween, Natale...) sono un livello a parte rispetto alla stagione.
+  const feste = activeHolidays(today);
+  Object.keys(CONFIG.holidays).forEach(k => document.body.classList.toggle(k, feste.indexOf(k) >= 0));
+
+  // Compleanni: festa tutta per chi li compie, e quel giorno hanno la precedenza.
+  const compleanni = birthdaysToday(today);
+  BDAY = compleanni;
+  document.body.classList.toggle("compleanno", compleanni.length > 0);
+  const bd = $("birthday");
+  bd.hidden = compleanni.length === 0;
+  if (compleanni.length) bd.textContent = "Oggi è il compleanno di " + compleanni.join(" e ") + "! 🎉";
+
+  initScene(key);
+  if (feste.indexOf("carnevale") >= 0 || compleanni.length) addConfetti();
+  $("who").textContent = CONFIG.names + " · " + s.emoji + " " + s.label +
+    feste.map(k => " " + (CONFIG.holidays[k].emoji || "")).join("") + (compleanni.length ? " 🎂" : "");
+
+  const sky = $("sky");
+  const n = window.innerWidth < 720 ? Math.round(s.count * 0.6) : s.count;
+
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("span");
+    p.className = "fall" + (s.kind === "glow" ? " rise" : "");
+
+    const size = s.kind === "snow" ? 6 + Math.random() * 9 : 14 + Math.random() * 14;
+    const dur = (s.kind === "snow" ? 12 : 14) + Math.random() * 12;
+
+    p.style.setProperty("--x", (Math.random() * 100).toFixed(1) + "%");
+    p.style.setProperty("--y", (Math.random() * 95).toFixed(1) + "vh");
+    p.style.setProperty("--s", size.toFixed(0) + "px");
+    p.style.setProperty("--d", dur.toFixed(1) + "s");
+    p.style.setProperty("--dl", (-Math.random() * dur).toFixed(1) + "s");
+    p.style.setProperty("--sw", (3 + Math.random() * 3).toFixed(1) + "s");
+    p.style.setProperty("--o", (0.5 + Math.random() * 0.4).toFixed(2));
+    p.innerHTML = shape(s.kind, s.colors[i % s.colors.length]);
+    sky.appendChild(p);
+  }
+}
+
+/* ---------- Sorprese al tocco ---------- */
+const WIN = { L: true, R: true };   // finestre accese / spente
+let DARK = 0;                        // quanto è buio (0–1), aggiornato da applyDaylight
+
+function paintWindows() {
+  // Da spenta la finestra riflette il cielo: chiara di giorno, scura di notte.
+  const off = mix("#A9C0D0", "#16213A", DARK);
+  ["L", "R"].forEach(c => {
+    $("win" + c).setAttribute("fill", WIN[c] ? "var(--light)" : off);
+    $("halo" + c).style.display = WIN[c] ? "" : "none";
+    $("hit" + c).setAttribute("aria-pressed", WIN[c] ? "true" : "false");
+  });
+  $("heartR").setAttribute("stroke", WIN.R ? "var(--light)" : off);
+  $("cat").style.opacity = WIN.L ? 1 : 0.45;
+}
+
+// Qualche nuvoletta di fumo in più dal camino.
+function puff() {
+  if (reduceMotion) return;
+  const g = $("burst");
+  if (g.childElementCount > 40) return;
+  for (let i = 0; i < 7; i++) {
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("class", "smoke burst");
+    c.setAttribute("cx", (303 + Math.random() * 6).toFixed(1));
+    c.setAttribute("cy", "112");
+    c.setAttribute("r", (4 + Math.random() * 3).toFixed(1));
+    c.style.setProperty("--bx", ((Math.random() - 0.2) * 26).toFixed(0) + "px");
+    c.style.animationDelay = (i * 0.18).toFixed(2) + "s";
+    c.addEventListener("animationend", () => c.remove());
+    g.appendChild(c);
+  }
+}
+
+function initTouch() {
+  const activate = (el, fn) => {
+    el.addEventListener("click", fn);
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); }
+    });
+  };
+  activate($("hitL"), () => { WIN.L = !WIN.L; paintWindows(); });
+  activate($("hitR"), () => { WIN.R = !WIN.R; paintWindows(); });
+  activate($("hitC"), puff);
+}
+
+/* ---------- Suoni d'ambiente (sintetizzati dal telefono con Web Audio, nessun file audio) ---------- */
+function createSoundEngine(ctx) {
+  const rnd = Math.random;
+  const master = ctx.createGain();
+  master.gain.value = 0;
+  const comp = ctx.createDynamicsCompressor();
+  master.connect(comp);
+  comp.connect(ctx.destination);
+
+  // Due secondi di rumore, riutilizzati da pioggia, vento, fuoco e tuono.
+  const len = Math.floor(ctx.sampleRate * 2);
+  const noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const nd = noiseBuf.getChannelData(0);
+  for (let i = 0; i < len; i++) nd[i] = Math.random() * 2 - 1;
+
+  const gain = (v, to) => { const g = ctx.createGain(); g.gain.value = v; if (to) g.connect(to); return g; };
+  const filt = (type, f, q) => { const b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q) b.Q.value = q; return b; };
+  const loopNoise = () => { const s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true; s.start(); return s; };
+
+  // Pioggia: rumore senza i toni più bassi e più alti.
+  const rainG = gain(0, master);
+  const rainHp = filt("highpass", 700), rainLp = filt("lowpass", 7000);
+  loopNoise().connect(rainHp); rainHp.connect(rainLp); rainLp.connect(rainG);
+
+  // Vento: rumore grave che si apre e si chiude lentamente, con folate.
+  const windG = gain(0, master);
+  const windMod = gain(0.75, windG);
+  const windLp = filt("lowpass", 420, 0.7);
+  loopNoise().connect(windLp); windLp.connect(windMod);
+  const lfo = ctx.createOscillator(); lfo.frequency.value = 0.17;
+  const lfoG = gain(260); lfo.connect(lfoG); lfoG.connect(windLp.frequency); lfo.start();
+  const lfo2 = ctx.createOscillator(); lfo2.frequency.value = 0.41;
+  const lfo2G = gain(0.25); lfo2.connect(lfo2G); lfo2G.connect(windMod.gain); lfo2.start();
+
+  // Camino: fiamma di fondo (rumore molto grave) più scoppiettii casuali.
+  const fireG = gain(0, master);
+  const fireBed = filt("lowpass", 220);
+  loopNoise().connect(fireBed); fireBed.connect(gain(0.16, fireG));
+
+  // Uccelli e grilli.
+  const birdsG = gain(0, master);
+  const cricketG = gain(0, master);
+  const crickets = [3900, 4450, 5050].map(f => {
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+    const g = gain(0, cricketG); o.connect(g); o.start();
+    return { g: g, next: 0 };
+  });
+
+  const fireState = { next: 0 }, birdState = { next: 0 };
+
+  function crackle(t, big) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const bp = filt("bandpass", 1200 + rnd() * 4500, 1.2);
+    const g = gain(0, fireG);
+    s.connect(bp); bp.connect(g);
+    const dur = big ? 0.03 + rnd() * 0.05 : 0.004 + rnd() * 0.02;
+    const a = big ? 0.7 + rnd() * 0.3 : 0.15 + rnd() * 0.4;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(a, t + 0.0015);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    s.start(t, rnd() * 1.5, dur + 0.02);
+  }
+
+  function chirp(v, t) {
+    for (let i = 0; i < 3; i++) {
+      const tt = t + i * 0.085;
+      v.g.gain.setValueAtTime(0, tt);
+      v.g.gain.linearRampToValueAtTime(0.14, tt + 0.008);
+      v.g.gain.linearRampToValueAtTime(0, tt + 0.034);
+    }
+  }
+
+  function tweet(t, base) {
+    const n = 2 + Math.floor(rnd() * 3);
+    let tt = t;
+    for (let i = 0; i < n; i++) {
+      const o = ctx.createOscillator(); o.type = "sine";
+      const g = gain(0, birdsG);
+      const f0 = base * (0.9 + rnd() * 0.3), f1 = f0 * (1.15 + rnd() * 0.5), d = 0.05 + rnd() * 0.06;
+      o.frequency.setValueAtTime(f0, tt);
+      o.frequency.exponentialRampToValueAtTime(f1, tt + d);
+      g.gain.setValueAtTime(0.0001, tt);
+      g.gain.linearRampToValueAtTime(0.25, tt + d * 0.3);
+      g.gain.exponentialRampToValueAtTime(0.0001, tt + d);
+      o.connect(g); o.start(tt); o.stop(tt + d + 0.02);
+      tt += d + 0.06 + rnd() * 0.05;
+    }
+  }
+
+  function thunder(t) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
+    const lp = filt("lowpass", 140 + rnd() * 80);
+    const g = gain(0, master);
+    s.connect(lp); lp.connect(g);
+    const dur = 3 + rnd() * 2.5;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(2.6, t + 0.25);
+    g.gain.linearRampToValueAtTime(1.0, t + 0.9);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    s.start(t); s.stop(t + dur + 0.1);
+  }
+
+  // Miagolio: un tono "ruvido" che sale e scende, filtrato come una voce.
+  function meow(t) {
+    const o = ctx.createOscillator(); o.type = "sawtooth";
+    const bp = filt("bandpass", 800, 3);
+    const g = gain(0, master);
+    o.connect(bp); bp.connect(g);
+    o.frequency.setValueAtTime(420, t);
+    o.frequency.linearRampToValueAtTime(720, t + 0.18);
+    o.frequency.linearRampToValueAtTime(380, t + 0.55);
+    bp.frequency.setValueAtTime(800, t);
+    bp.frequency.linearRampToValueAtTime(1500, t + 0.2);
+    bp.frequency.linearRampToValueAtTime(700, t + 0.55);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.5, t + 0.06);
+    g.gain.linearRampToValueAtTime(0.35, t + 0.3);
+    g.gain.linearRampToValueAtTime(0, t + 0.6);
+    o.start(t); o.stop(t + 0.65);
+  }
+
+  // L = { rain, wind, fire, crickets, birds } con valori 0–1.
+  function setLevels(L, vol) {
+    const now = ctx.currentTime, tc = 1.2;
+    rainG.gain.setTargetAtTime(0.18 * L.rain, now, tc);
+    windG.gain.setTargetAtTime(0.8 * L.wind, now, tc);
+    fireG.gain.setTargetAtTime(1.2 * L.fire, now, tc);
+    cricketG.gain.setTargetAtTime(1.4 * L.crickets, now, tc);
+    birdsG.gain.setTargetAtTime(1.2 * L.birds, now, tc);
+    master.gain.setTargetAtTime(vol, now, 0.5);
+  }
+
+  // Programma i suoni "a eventi" (scoppiettii, canti) per l'intervallo [from, to] secondi.
+  function schedule(from, to, L) {
+    if (L.fire > 0.03) {
+      if (fireState.next < from) fireState.next = from;
+      while (fireState.next < to) {
+        crackle(fireState.next, rnd() < 0.08);
+        fireState.next += 0.03 + Math.pow(rnd(), 2) * 0.45;
+      }
+    }
+    if (L.crickets > 0.03) {
+      crickets.forEach((v, i) => {
+        if (v.next < from) v.next = from + rnd() * 0.6;
+        while (v.next < to) { chirp(v, v.next); v.next += 1.1 + rnd() * 0.9 + i * 0.15; }
+      });
+    }
+    if (L.birds > 0.03) {
+      if (birdState.next < from) birdState.next = from + rnd();
+      while (birdState.next < to) {
+        tweet(birdState.next, 2400 + rnd() * 1800);
+        birdState.next += 1.3 + rnd() * 4.5;
+      }
+    }
+  }
+
+  return { ctx: ctx, master: master, setLevels: setLevels, schedule: schedule, thunder: thunder, meow: meow };
+}
+
+// Cosa far sentire adesso, in base a meteo, stagione e ora (valori 0–1).
+function soundLevels() {
+  const season = document.body.dataset.season;
+  const k = DARK, t = TIME.t;
+  const temp = WX.has && typeof WX.temp === "number" ? WX.temp : null;
+  const windV = WX.has ? WX.wind : 0;
+  const rain = WX.snow ? 0 : Math.min(1, WX.rain * 1.15);
+  const wind = Math.min(1, smooth((windV - 4) / 40) + (WX.storm ? 0.25 : 0));
+  const calm = (1 - rain) * (1 - smooth((windV - 12) / 18));
+  const cold = temp != null ? smooth((17 - temp) / 9) : (season === "autunno" || season === "inverno" ? 0.6 : 0);
+  const warm = temp != null ? smooth((temp - 11) / 8) : (season === "estate" ? 1 : season === "inverno" ? 0 : 0.5);
+  const crickets = smooth((k - 0.4) / 0.4) * warm * calm;
+  const morning = smooth((t - (TIME.rise - 30)) / 30) * (1 - smooth((t - (TIME.rise + 150)) / 120));
+  const evening = smooth((t - (TIME.set - 150)) / 40) * (1 - smooth((t - TIME.set) / 40));
+  const day = smooth((LIGHT - 0.25) / 0.5);
+  const birds = day * calm * Math.min(1, 0.25 + 0.75 * morning + 0.5 * evening) * (season === "inverno" ? 0.4 : 1);
+  return { rain: rain, wind: wind, fire: cold, crickets: crickets, birds: birds };
+}
+
+let AUDIO = null, STARTING = false;
+
+function updateSound() {
+  if (AUDIO) AUDIO.engine.setLevels(soundLevels(), CONFIG.soundVolume);
+}
+
+function soundTick() {
+  const a = AUDIO;
+  if (!a) return;
+  const now = a.ctx.currentTime;
+  a.engine.schedule(Math.max(a.until, now), now + 2.5, soundLevels());
+  a.until = now + 2.5;
+}
+
+function setSoundButton(on) {
+  const b = $("soundBtn");
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.setAttribute("aria-label", on ? "Spegni i suoni d'ambiente" : "Attiva i suoni d'ambiente");
+  b.title = on ? "Suoni d'ambiente: accesi" : "Suoni d'ambiente: spenti";
+}
+
+async function startSound() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC || STARTING || AUDIO) return;
+  STARTING = true;
+  try {
+    const ctx = new AC();
+    try { await ctx.resume(); } catch (e) { /* alcuni browser riprendono da soli */ }
+    AUDIO = { ctx: ctx, engine: createSoundEngine(ctx), until: ctx.currentTime, timer: setInterval(soundTick, 1000) };
+    updateSound();
+    soundTick();
+    setSoundButton(true);
+  } catch (e) {
+    AUDIO = null;
+  }
+  STARTING = false;
+}
+
+function stopSound() {
+  const a = AUDIO;
+  AUDIO = null;
+  setSoundButton(false);
+  if (!a) return;
+  clearInterval(a.timer);
+  a.engine.master.gain.setTargetAtTime(0, a.ctx.currentTime, 0.2);
+  setTimeout(() => { a.ctx.close().catch(() => {}); }, 900);
+}
+
+function initSound() {
+  const btn = $("soundBtn");
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!CONFIG.sound || !AC) { btn.hidden = true; return; }
+
+  btn.addEventListener("click", () => { if (AUDIO) stopSound(); else startSound(); });
+
+  // Il tuono segue il lampo: arriva qualche istante dopo, come nella realtà.
+  const onFlash = () => {
+    const a = AUDIO;
+    if (!a || !WX.storm || reduceMotion) return;
+    setTimeout(() => { if (AUDIO === a && WX.storm) a.engine.thunder(a.ctx.currentTime + 0.05); },
+      (6.4 + 0.8 + Math.random() * 1.8) * 1000);
+  };
+  $("flash").addEventListener("animationstart", onFlash);
+  $("flash").addEventListener("animationiteration", onFlash);
+
+  // Se la pagina va in secondo piano il suono si ferma, e riprende quando si torna.
+  document.addEventListener("visibilitychange", () => {
+    const a = AUDIO;
+    if (!a) return;
+    if (document.hidden) a.ctx.suspend(); else a.ctx.resume();
+  });
+}
+
+/* ---------- Abitanti: gatto, uccellini, stelle cadenti, lucciole ---------- */
+const SVGNS = "http://www.w3.org/2000/svg";
+
+// Un uccellino che guarda a destra (per andare a sinistra si specchia).
+const BIRD_SVG =
+  '<g class="bobber"><g transform="scale(DIR 1)">' +
+  '<polygon points="-3.4,0 -7,-1.2 -7,1.4" fill="#3A2E2A"/>' +
+  '<ellipse rx="3.8" ry="2.1" fill="#5A463C"/><circle cx="3.6" cy="-0.7" r="1.6" fill="#5A463C"/>' +
+  '<polygon points="5,-0.9 6.8,-0.2 5,0.5" fill="#E8A53A"/><circle cx="4" cy="-1" r=".35" fill="#fff"/>' +
+  '<path class="wing" d="M-1 0Q-4 -7.5 -9 -6.5Q-5 -2.5 -1 0Z" fill="#3A2E2A"/>' +
+  '</g></g>';
+
+function flyBirds(n) {
+  if (reduceMotion) return;
+  const layer = $("flyers");
+  if (layer.childElementCount > 8) return;
+  const dir = Math.random() < 0.5 ? 1 : -1;
+  const y0 = 50 + Math.random() * 120;
+  const dur = 8 + Math.random() * 3;
+  for (let i = 0; i < n; i++) {
+    const g = document.createElementNS(SVGNS, "g");
+    g.setAttribute("class", "flyer");
+    const from = dir > 0 ? -30 - i * 24 : 510 + i * 24, to = dir > 0 ? 510 : -30;
+    g.style.setProperty("--x0", from + "px");
+    g.style.setProperty("--x1", to + "px");
+    g.style.setProperty("--y0", (y0 + i * 9).toFixed(0) + "px");
+    g.style.setProperty("--y1", (y0 + i * 9 + (Math.random() - 0.5) * 50).toFixed(0) + "px");
+    g.style.setProperty("--d", dur.toFixed(1) + "s");
+    g.innerHTML = BIRD_SVG.replace("DIR", String(dir));
+    g.addEventListener("animationend", e => { if (e.target === g) g.remove(); });
+    layer.appendChild(g);
+  }
+}
+
+function shootingStar() {
+  if (reduceMotion) return;
+  const layer = $("flyers");
+  if (layer.childElementCount > 8) return;
+  const g = document.createElementNS(SVGNS, "g");
+  g.setAttribute("class", "meteor");
+  g.style.setProperty("--x0", (40 + Math.random() * 180).toFixed(0) + "px");
+  g.style.setProperty("--y0", (20 + Math.random() * 90).toFixed(0) + "px");
+  g.innerHTML = '<line x1="0" y1="0" x2="-38" y2="-15.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity=".85"/>' +
+    '<circle r="1.9" fill="#FFFFFF"/>';
+  g.addEventListener("animationend", () => g.remove());
+  layer.appendChild(g);
+}
+
+// Ogni tanto, di giorno e col bel tempo, passa qualche uccellino.
+function maybeBirds() {
+  if (document.hidden || reduceMotion) return;
+  if (LIGHT < 0.6 || WX.rain || WX.snow || WX.storm || WX.fog > 0.5 || (WX.has && WX.wind > 35)) return;
+  flyBirds(1 + Math.floor(Math.random() * 3));
+}
+
+function scheduleBirds(first) {
+  setTimeout(() => { maybeBirds(); scheduleBirds(false); }, (first ? 8 + Math.random() * 6 : 25 + Math.random() * 40) * 1000);
+}
+
+// Carezza al gatto: si stiracchia, escono cuoricini e, con i suoni accesi, miagola.
+function petCat() {
+  const cat = $("cat");
+  if (AUDIO && !cat.classList.contains("asleep")) AUDIO.engine.meow(AUDIO.ctx.currentTime + 0.02);
+  if (reduceMotion) return;
+  cat.classList.remove("pet");
+  void cat.getBoundingClientRect();
+  cat.classList.add("pet");
+  setTimeout(() => cat.classList.remove("pet"), 1000);
+  for (let i = 0; i < 3; i++) {
+    const h = document.createElementNS(SVGNS, "path");
+    h.setAttribute("class", "heart-pop");
+    h.setAttribute("d", "M0 2.5C-4 -.5 -5 -2.5 -5 -4C-5 -6 -3 -7 -1.5 -7C-.5 -7 0 -6.2 0 -5.6C0 -6.2 .5 -7 1.5 -7C3 -7 5 -6 5 -4C5 -2.5 4 -.5 0 2.5Z");
+    h.setAttribute("fill", "#E5483C");
+    h.style.setProperty("--hx", (151 + i * 6 + Math.random() * 4).toFixed(0) + "px");
+    h.style.setProperty("--hy", (244 - i * 2).toFixed(0) + "px");
+    h.style.animationDelay = (i * 0.22).toFixed(2) + "s";
+    h.addEventListener("animationend", () => h.remove());
+    $("lit").appendChild(h);
+  }
+}
+
+// Tocco sul cielo: di giorno passano gli uccellini, di notte una stella cadente.
+function skyTap() {
+  if (LIGHT > 0.4) flyBirds(2 + Math.floor(Math.random() * 2));
+  else shootingStar();
+}
+
+function buildFireflies() {
+  const r = mulberry32(77);
+  let out = "";
+  for (let i = 0; i < 16; i++) {
+    out += '<g transform="translate(' + (24 + r() * 432).toFixed(0) + " " + (300 + r() * 92).toFixed(0) + ')">' +
+      '<g class="ff" style="--dx:' + ((r() - 0.5) * 40).toFixed(0) + "px;--dy:" + ((r() - 0.5) * 24).toFixed(0) +
+      "px;--m:" + (6 + r() * 6).toFixed(1) + "s;--b:" + (1.6 + r() * 2).toFixed(1) + "s;animation-delay:-" + (r() * 8).toFixed(1) + 's">' +
+      '<circle r="5" fill="#E6FF7A" opacity=".22"/><circle r="1.7" fill="#F4FFB0"/></g></g>';
+  }
+  $("fireflies").innerHTML = out;
+}
+
+// Aggiorna ciò che dipende da ora e meteo: il gatto dorme di notte, le lucciole escono d'estate al buio.
+function updateCreatures() {
+  $("cat").classList.toggle("asleep", DARK > 0.6);
+  const warmNight = document.body.dataset.season === "estate";
+  const calm = (1 - Math.min(1, WX.rain * 1.5)) * (1 - smooth(((WX.has ? WX.wind : 0) - 15) / 15));
+  $("fireflies").setAttribute("opacity", (warmNight ? smooth((DARK - 0.45) / 0.3) * calm : 0).toFixed(2));
+}
+
+function initCreatures() {
+  buildFireflies();
+  scheduleBirds(true);
+  const activate = (el, fn) => {
+    el.addEventListener("click", fn);
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } });
+  };
+  activate($("hitCat"), petCat);
+  activate($("hitSky"), skyTap);
+  updateCreatures();
+}
+
+/* ---------- Effetti del meteo: vento, vetri appannati, arcobaleno ---------- */
+function applyWeatherFx() {
+  const svg = document.querySelector(".door-svg");
+  const sdir = windScreenDir();
+  const v = WX.wind, g = Math.max(WX.gust, v);
+
+  // Alberi: si inclinano da una parte (vento medio) e oscillano (raffiche).
+  const trees = $("trees");
+  trees.style.setProperty("--lean", (sdir * Math.min(8, v / 5.5)).toFixed(2) + "deg");
+  trees.style.setProperty("--amp", Math.min(4, 0.3 + g / 22).toFixed(2) + "deg");
+  trees.style.setProperty("--tp", Math.max(1.4, 4.2 - v / 14).toFixed(2) + "s");
+
+  // Fumo che si piega, bandiera più o meno agitata, foglie e petali portati dal vento.
+  svg.style.setProperty("--smx", (WX.has ? sdir * Math.min(40, 6 + v * 0.7) : 12).toFixed(0) + "px");
+  svg.style.setProperty("--flagp", Math.max(0.7, 2.6 - v / 18).toFixed(2) + "s");
+  $("sky").style.setProperty("--wdx", (WX.has ? sdir * Math.min(30, v * 0.9) : 0).toFixed(1) + "vw");
+
+  // Vetri: si appannano sotto i 12° e arrivano al massimo a 2°; sotto zero c'è la brina.
+  const temp = WX.has && typeof WX.temp === "number" ? WX.temp : 20;
+  $("windowFog").setAttribute("opacity", smooth((12 - temp) / 10).toFixed(2));
+  $("frost").setAttribute("opacity", smooth((2 - temp) / 4).toFixed(2));
+
+  // Arcobaleno: ha piovuto da poco, il sole è basso e fa capolino tra le nuvole.
+  let bow = 0;
+  if (WX.has && WX.recentRain >= 0.3 && LIGHT > 0.5) {
+    bow = Math.min(1, WX.recentRain / 1.5) *
+      (1 - smooth((WX.cover - 0.2) / 0.45)) *
+      smooth((SUNALT - 2) / 6) * (1 - smooth((SUNALT - 34) / 8));
+  }
+  const rb = $("rainbow");
+  rb.setAttribute("opacity", (0.6 * bow).toFixed(2));
+  rb.setAttribute("transform", "translate(" + Math.max(130, Math.min(350, 480 - SUNX)).toFixed(0) + " 0)");
+}
+
+/* ---------- Meteo reale (Open-Meteo) ---------- */
+// Codici meteo WMO -> descrizione e intensità degli effetti (0–1).
+const WMO = {
+  0: { l: "sereno" }, 1: { l: "quasi sereno" }, 2: { l: "poco nuvoloso" }, 3: { l: "coperto" },
+  45: { l: "nebbia", fog: 0.85 }, 48: { l: "nebbia con brina", fog: 0.85 },
+  51: { l: "pioggerella leggera", rain: 0.25 }, 53: { l: "pioggerella", rain: 0.35 }, 55: { l: "pioggerella intensa", rain: 0.5 },
+  56: { l: "pioggerella gelata", rain: 0.35 }, 57: { l: "pioggerella gelata", rain: 0.5 },
+  61: { l: "pioggia leggera", rain: 0.45 }, 63: { l: "pioggia", rain: 0.7 }, 65: { l: "pioggia forte", rain: 1 },
+  66: { l: "pioggia gelata", rain: 0.7 }, 67: { l: "pioggia gelata forte", rain: 0.9 },
+  71: { l: "neve debole", snow: 0.4 }, 73: { l: "neve", snow: 0.7 }, 75: { l: "neve forte", snow: 1 }, 77: { l: "nevischio", snow: 0.3 },
+  80: { l: "rovesci deboli", rain: 0.5 }, 81: { l: "rovesci", rain: 0.8 }, 82: { l: "rovesci forti", rain: 1 },
+  85: { l: "rovesci di neve", snow: 0.6 }, 86: { l: "rovesci di neve forti", snow: 0.9 },
+  95: { l: "temporale", rain: 0.8, storm: true }, 96: { l: "temporale con grandine", rain: 1, storm: true },
+  99: { l: "temporale forte con grandine", rain: 1, storm: true }
+};
+
+// Per l'anteprima con ?meteo=...
+const MOCK_WX = {
+  sereno:      { weather_code: 0,  cloud_cover: 0,   temperature_2m: 18, wind_speed_10m: 6 },
+  nuvoloso:    { weather_code: 3,  cloud_cover: 100, temperature_2m: 14, wind_speed_10m: 10 },
+  pioggerella: { weather_code: 53, cloud_cover: 90,  temperature_2m: 12, wind_speed_10m: 8 },
+  pioggia:     { weather_code: 63, cloud_cover: 100, temperature_2m: 11, wind_speed_10m: 14 },
+  temporale:   { weather_code: 95, cloud_cover: 100, temperature_2m: 16, wind_speed_10m: 30 },
+  neve:        { weather_code: 73, cloud_cover: 100, temperature_2m: -1, wind_speed_10m: 8 },
+  nebbia:      { weather_code: 45, cloud_cover: 100, temperature_2m: 7,  wind_speed_10m: 3 },
+  vento:       { weather_code: 2,  cloud_cover: 40,  temperature_2m: 15, wind_speed_10m: 40, wind_gusts_10m: 65, wind_direction_10m: 270 },
+  freddo:      { weather_code: 3,  cloud_cover: 90,  temperature_2m: 4,  wind_speed_10m: 6 },
+  gelo:        { weather_code: 0,  cloud_cover: 10,  temperature_2m: -3, wind_speed_10m: 4 },
+  arcobaleno:  { weather_code: 2,  cloud_cover: 30,  temperature_2m: 14, wind_speed_10m: 8, recent_rain: 2 }   // con ?ora=17:30
+};
+
+let WX = { has: false, cover: 0, fog: 0, rain: 0, snow: 0, storm: false, wind: 0, gust: 0, dir: null, label: "", temp: null, recentRain: 0 };
+let TIME = { t: 720, rise: 420, set: 1080 };   // ora (minuti da mezzanotte), alba e tramonto di oggi
+let SUNALT = 0, SUNX = 240, LIGHT = 1;   // altezza del sole, posizione nel cielo, luce (aggiornati da applyDaylight)
+let wxSig = "";
+
+function setWeather(cur, recent) {
+  const info = WMO[cur.weather_code] || { l: "" };
+  let cover = typeof cur.cloud_cover === "number" ? cur.cloud_cover / 100 : 0;
+  if (info.rain || info.snow || info.storm) cover = Math.max(cover, 0.85);
+  if (info.fog) cover = Math.max(cover, 0.7);
+  WX = {
+    cover: Math.min(1, cover), fog: info.fog || 0, rain: info.rain || 0, snow: info.snow || 0,
+    storm: !!info.storm, wind: cur.wind_speed_10m || 0, label: info.l, temp: cur.temperature_2m,
+    has: true, gust: cur.wind_gusts_10m || 0,
+    dir: typeof cur.wind_direction_10m === "number" ? cur.wind_direction_10m : null,
+    recentRain: typeof recent === "number" ? recent : (cur.recent_rain || 0)
+  };
+  renderWeather();
+  applyDaylight();
+}
+
+// Da che parte spinge il vento sullo schermo: -1 = verso sinistra, +1 = verso destra.
+// La scena guarda a sud (il sole va da sinistra a destra, quindi l'est è a sinistra):
+// un vento da ovest (270°) spinge verso est, cioè verso sinistra.
+function windScreenDir() {
+  return Math.sin((WX.dir == null ? 270 : WX.dir) * Math.PI / 180);
+}
+
+function renderWeather() {
+  const svg = document.querySelector(".door-svg");
+  svg.classList.toggle("storm", WX.storm);
+
+  // Le particelle si ridisegnano solo se cambiano intensità o vento.
+  const sdir = windScreenDir();
+  const sig = [WX.rain.toFixed(2), WX.snow.toFixed(2), Math.round(WX.wind / 10), Math.round(sdir * 10)].join("|");
+  if (sig !== wxSig) {
+    wxSig = sig;
+    const r = mulberry32(31);
+    const dx = sdir * Math.min(120, WX.wind * 3.2);      // il vento inclina la pioggia: negativo = verso sinistra
+    let drops = "", flakes = "";
+
+    const nDrops = Math.round(WX.rain * 110);
+    for (let i = 0; i < nDrops; i++) {
+      const len = 9 + r() * 7;
+      const x = (dx < 0 ? 0 : -dx) + r() * (480 + Math.abs(dx));
+      const d = (0.55 + r() * 0.35) * (1.25 - 0.4 * WX.rain);
+      drops += '<line class="drop" x1="0" y1="0" x2="' + (dx / 424 * len).toFixed(2) + '" y2="' + len.toFixed(1) +
+        '" style="--x:' + x.toFixed(1) + "px;--y:" + (r() * 400).toFixed(0) + "px;--dx:" + dx.toFixed(0) +
+        "px;--d:" + d.toFixed(2) + "s;animation-delay:-" + (r() * d).toFixed(2) + 's"/>';
+    }
+
+    const nFlakes = Math.round(WX.snow * 90);
+    for (let i = 0; i < nFlakes; i++) {
+      const d = 6 + r() * 5;
+      flakes += '<circle class="flake" r="' + (1.4 + r() * 1.6).toFixed(1) +
+        '" style="--x:' + (r() * 480).toFixed(1) + "px;--y:" + (r() * 400).toFixed(0) + "px;--dx:" +
+        (((r() - 0.5) * 50) + dx * 0.3).toFixed(0) + "px;--d:" + d.toFixed(1) +
+        "s;animation-delay:-" + (r() * d).toFixed(1) + 's"/>';
+    }
+    $("rain").innerHTML = drops;
+    $("snowfall").innerHTML = flakes;
+  }
+
+  // Riga di testo con temperatura e condizioni.
+  const night = document.body.classList.contains("night");
+  const emo = WX.storm ? "⛈️" : WX.snow ? "❄️" : WX.rain ? "🌧️" : WX.fog ? "🌫️" :
+    WX.cover > 0.6 ? "☁️" : WX.cover > 0.25 ? "⛅" : (night ? "🌙" : "☀️");
+  if (WX.label && typeof WX.temp === "number") {
+    $("weather").textContent = emo + " " + CONFIG.place.name + ", adesso: " + Math.round(WX.temp) + "° · " + WX.label;
+    $("weather").hidden = false;
+  }
+}
+
+// Quanta pioggia (mm) è caduta nelle ultime ore, dalle righe orarie fino a "adesso".
+function recentRain(h, now) {
+  if (!h || !h.time || !h.precipitation) return 0;
+  let sum = 0;
+  h.time.forEach((t, i) => { if (t <= now) sum += h.precipitation[i] || 0; });
+  return sum;
+}
+
+async function loadWeather() {
+  const mock = new URLSearchParams(location.search).get("meteo");
+  if (mock && MOCK_WX[mock]) { setWeather(MOCK_WX[mock]); return; }
+  if (!CONFIG.weather) return;
+  try {
+    const P = CONFIG.place;
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + P.lat + "&longitude=" + P.lon +
+      "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_gusts_10m,wind_direction_10m" +
+      "&hourly=precipitation&past_hours=3&forecast_hours=1&timezone=" + encodeURIComponent(P.tz);
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 8000);
+    const res = await fetch(url, { signal: ctl.signal });
+    clearTimeout(to);
+    if (!res.ok) return;
+    const j = await res.json();
+    if (j && j.current) setWeather(j.current, recentRain(j.hourly, j.current.time));
+  } catch (e) {
+    // Senza connessione o se il servizio non risponde, la scena resta com'era.
+  }
+}
+
+/* ---------- Giorno e notte (ora di Roma) ---------- */
+const smooth = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+
+function hex2rgb(h) {
+  h = h.trim().replace("#", "");
+  if (h.length === 3) h = h.split("").map(c => c + c).join("");
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function mix(a, b, t) {
+  const A = hex2rgb(a), B = hex2rgb(b);
+  return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+
+// Data e ora (in minuti dalla mezzanotte) nel fuso orario scelto.
+function zoned(date, tz) {
+  const p = {};
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+  }).formatToParts(date).forEach(x => { p[x.type] = x.value; });
+  return { y: +p.year, m: +p.month, d: +p.day, min: +p.hour * 60 + +p.minute + +p.second / 60 };
+}
+
+// Alba e tramonto calcolati dalla posizione del Sole (nessun servizio esterno).
+// alt = altezza del Sole sull'orizzonte: -0.833 per alba/tramonto, -6 per il crepuscolo civile.
+// Il risultato è in minuti dalla mezzanotte, nell'ora locale del luogo (quindi con ora legale).
+function sunEvent(y, m, d, alt) {
+  const P = CONFIG.place, rad = Math.PI / 180;
+  const jd = Date.UTC(y, m - 1, d, 12) / 86400000 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008);
+  const Js = n - P.lon / 360;
+  const M = (357.5291 + 0.98560028 * Js) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const lam = (M + C + 180 + 102.9372) % 360;
+  const Jt = 2451545.0 + Js + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * lam * rad);
+  const sinD = Math.sin(lam * rad) * Math.sin(23.4397 * rad);
+  const cosD = Math.cos(Math.asin(sinD));
+  const cosW = (Math.sin(alt * rad) - Math.sin(P.lat * rad) * sinD) / (Math.cos(P.lat * rad) * cosD);
+  const w = Math.acos(Math.max(-1, Math.min(1, cosW))) / rad;
+  const toMin = J => zoned(new Date((J - 2440587.5) * 86400000), P.tz).min;
+  return { rise: toMin(Jt - w / 360), set: toMin(Jt + w / 360), noon: toMin(Jt), sinD: sinD, cosD: cosD };
+}
+
+// Fase lunare (0 = nuova, 0.5 = piena) e forma della parte illuminata.
+function moonPhase(date) {
+  const syn = 29.530588853;
+  const jd = date.getTime() / 86400000 + 2440587.5;
+  return ((((jd - 2451550.1) % syn) + syn) % syn) / syn;
+}
+
+function moonLitPath(r, ph) {
+  const k = Math.cos(2 * Math.PI * ph);
+  const rx = (Math.abs(k) * r).toFixed(2);
+  return "M0 " + (-r) + "A" + r + " " + r + " 0 0 1 0 " + r +
+         "A" + rx + " " + r + " 0 0 " + (k > 0 ? 0 : 1) + " 0 " + (-r) + "Z";
+}
+
+function starsHtml() {
+  const r = mulberry32(5);
+  let out = "";
+  for (let i = 0; i < 48; i++) {
+    out += '<circle class="star" cx="' + (8 + r() * 464).toFixed(1) + '" cy="' + (10 + r() * 220).toFixed(1) +
+      '" r="' + (0.8 + r()).toFixed(1) + '" fill="#fff" style="--tw:' + (2 + r() * 3).toFixed(1) +
+      "s;animation-delay:-" + (r() * 4).toFixed(1) + 's"/>';
+  }
+  return out;
+}
+
+function applyDaylight() {
+  const P = CONFIG.place;
+  const real = romeToday();
+  let t = real.min;
+
+  // Anteprima: aggiungi ?ora=22:30 all'indirizzo per vedere la scena a quell'ora (ora di Roma).
+  const ora = new URLSearchParams(location.search).get("ora");
+  if (ora && /^\d{1,2}:\d{2}$/.test(ora)) {
+    const hm = ora.split(":").map(Number);
+    t = hm[0] * 60 + hm[1];
+  }
+
+  const ev = sunEvent(real.y, real.m, real.d, -0.833);
+  const tw = sunEvent(real.y, real.m, real.d, -6);
+  const rise = ev.rise, set = ev.set, dawn = tw.rise, dusk = tw.set;
+
+  // Quanta luce c'è (0 = notte piena, 1 = giorno pieno).
+  // Al mattino sale dal crepuscolo fino a poco dopo l'alba; la sera scende da poco prima
+  // del tramonto fino al crepuscolo. Al momento esatto di alba/tramonto è ancora luminoso.
+  const m0 = dawn - 10, m1 = rise + 25, e0 = set - 25, e1 = dusk + 10;
+  let light;
+  if (t <= m0 || t >= e1) light = 0;
+  else if (t < m1) light = smooth((t - m0) / (m1 - m0));
+  else if (t <= e0) light = 1;
+  else light = smooth((e1 - t) / (e1 - e0));
+
+  const k = 1 - light;                                   // buio
+  const w = Math.min(1, Math.exp(-Math.pow((t - rise) / 40, 2)) +
+                        Math.exp(-Math.pow((t - set) / 40, 2)));   // luce calda di alba/tramonto
+
+  const svg = document.querySelector(".door-svg");
+  const css = getComputedStyle(document.body);
+  const skyTop = css.getPropertyValue("--sky-top").trim();
+  const skyLow = css.getPropertyValue("--sky-low").trim();
+  const sunCol = css.getPropertyValue("--sun").trim();
+
+  if (/^#/.test(skyTop) && /^#/.test(skyLow)) {
+    let top = mix(skyTop, "#0A1430", k);
+    top = mix(top, "#6C5B8F", 0.25 * w);
+    let low = mix(skyLow, "#25396B", k);
+    low = mix(low, "#F7A96B", 0.55 * w * (1 - 0.6 * k));
+    const f = 0.75 * WX.cover;
+    top = mix(top, mix(WX.storm ? "#5A6370" : "#9AA6B4", "#0F1624", k), f);
+    low = mix(low, mix(WX.storm ? "#8A929C" : "#C9D0D8", "#2A3248", k), f);
+    $("skyTop").setAttribute("stop-color", top);
+    $("skyLow").setAttribute("stop-color", low);
+  }
+
+  // Il paesaggio si scurisce e vira al blu; all'alba e al tramonto prende una luce calda.
+  const r = 1 - 0.60 * k + 0.08 * w, g = 1 - 0.50 * k, b = 1 - 0.28 * k - 0.14 * w;
+  $("nightM").setAttribute("values",
+    [r, 0, 0, 0, 0, 0, g, 0, 0, 0, 0, 0, b, 0, 0, 0, 0, 0, 1, 0].map(v => +v.toFixed(3)).join(" "));
+
+  $("stars").style.opacity = (Math.max(0, (k - 0.4) / 0.6) * (1 - 0.95 * WX.cover)).toFixed(2);
+  $("clouds").setAttribute("opacity", (0.65 * light + 0.12 * k).toFixed(2));
+  $("horizonGlow").setAttribute("opacity", (0.6 * w * (1 - 0.35 * k) * (1 - 0.85 * WX.cover)).toFixed(2));
+
+  // Meteo: nuvole in più (più scure col brutto tempo), nebbia, colore della pioggia.
+  const cm = $("cloudsMore");
+  cm.setAttribute("opacity", (WX.cover * (0.75 * light + 0.16 * k)).toFixed(2));
+  cm.setAttribute("fill", mix("#FFFFFF", "#6F7885", WX.storm ? 0.6 : (WX.rain || WX.snow) ? 0.35 : 0));
+  $("fog").setAttribute("opacity", WX.fog.toFixed(2));
+  ["fog0", "fog1", "fog2"].forEach(id => $(id).setAttribute("stop-color", mix("#E8EEF2", "#1B2742", k)));
+
+  // Sole: sorge a est, tramonta a ovest, passando dietro alle colline.
+  const p = (t - rise) / (set - rise);
+  const sunUp = t > rise - 12 && t < set + 12;
+  $("sun").setAttribute("transform",
+    "translate(" + (60 + 360 * p).toFixed(1) + " " + (292 - 250 * Math.sin(Math.PI * p)).toFixed(1) + ")");
+  $("sun").style.opacity = sunUp ? (1 - 0.85 * WX.cover).toFixed(2) : 0;
+  if (/^#/.test(sunCol)) $("sunDisc").setAttribute("fill", mix(sunCol, "#FF8A3D", 0.65 * w));
+
+  // Luna: sorge al tramonto e tramonta all'alba, con la fase del giorno.
+  const nightLen = 1440 - (set - rise);
+  let q = -1;
+  if (t >= set) q = (t - set) / nightLen;
+  else if (t < rise) q = (t - set + 1440) / nightLen;
+  const moon = $("moon");
+  if (q >= 0 && q <= 1) {
+    const ph = moonPhase(new Date(Date.UTC(real.y, real.m - 1, real.d, 12)));
+    moon.setAttribute("transform",
+      "translate(" + (60 + 360 * q).toFixed(1) + " " + (292 - 240 * Math.sin(Math.PI * q)).toFixed(1) + ")");
+    $("moonLit").setAttribute("d", moonLitPath(14, ph));
+    $("moonLit").setAttribute("transform", ph >= 0.5 ? "scale(-1 1)" : "");
+    moon.style.opacity = (Math.min(1, k * 1.6) * (1 - 0.75 * WX.cover)).toFixed(2);
+  } else {
+    moon.style.opacity = 0;
+  }
+
+  // Finestre e porta: più luminose quando fa buio.
+  const glow = smooth(k * 1.4);
+  $("halos").setAttribute("opacity", (0.7 * glow).toFixed(2));
+  $("spillNight").setAttribute("opacity", (0.6 * glow).toFixed(2));
+
+  svg.style.setProperty("--bat", mix("#2B2433", "#A79BD0", k));
+  svg.style.setProperty("--rain", mix("#CFE0F5", "#7F97BE", k));
+
+  DARK = k;
+  paintWindows();
+
+  // Altezza del sole sull'orizzonte (gradi): serve all'arcobaleno.
+  const rad = Math.PI / 180;
+  const H = (t - ev.noon) * 0.25;
+  SUNALT = Math.asin(Math.sin(P.lat * rad) * ev.sinD + Math.cos(P.lat * rad) * ev.cosD * Math.cos(H * rad)) / rad;
+  SUNX = 60 + 360 * p;
+  LIGHT = light;
+  TIME = { t: t, rise: rise, set: set };
+  applyWeatherFx();
+  updateSound();
+  updateCreatures();
+  document.body.classList.toggle("night", k > 0.5);
+
+  // Il colore della barra del telefono segue lo sfondo (stagione e notte).
+  const wall = getComputedStyle(document.body).getPropertyValue("--wall").trim();
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta && /^#/.test(wall)) meta.setAttribute("content", wall);
+}
+
+function init() {
+  $("who").textContent = CONFIG.names;
+  initSeason();
+  applyDaylight();
+  initTouch();
+  initSound();
+  initCreatures();
+  $("note").textContent = CONFIG.message;
+  $("note").hidden = !CONFIG.message;
+
+  const dateText = new Intl.DateTimeFormat("it-IT", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  }).format(target);
+
+  const weekends = countWeekends(new Date(), target);
+  $("when").innerHTML =
+    "Fino a <strong>" + dateText + "</strong>. " +
+    (weekends > 0
+      ? "Prima delle chiavi: " + weekends + " " + plural(weekends, "weekend", "weekend") + "."
+      : "");
+
+  renderSteps();
+  const running = render();
+
+  // La porta parte chiusa e si apre una volta sola, all'arrivo.
+  const progress = (new Date() - start) / (target - start);
+  if (reduceMotion) {
+    setDoor(progress);
+  } else {
+    $("leaf").style.transform = "scaleX(1)";
+    requestAnimationFrame(() => requestAnimationFrame(() => setDoor(progress)));
+  }
+
+  setInterval(applyDaylight, 60000);
+
+  loadWeather();
+  setInterval(loadWeather, 15 * 60 * 1000);
+
+  if (running) {
+    setInterval(() => {
+      if (!render()) return;
+      // Aggiorna la porta ogni minuto, senza strappi.
+      if (new Date().getSeconds() === 0) {
+        setDoor((new Date() - start) / (target - start));
+        renderSteps();
+      }
+    }, 1000);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
